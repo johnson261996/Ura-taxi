@@ -24,8 +24,8 @@ class MapUtil{
   Future<List<LatLng>> getRoutePath(LatLng origin, LatLng destin) async{
     List<LatLng> locationsSteps = [];
     APIDirections.DirectionsResponse resDirections = await directions.directionsWithLocation(
-         APIDirections.Location(origin.latitude, origin.longitude),
-         APIDirections.Location(destin.latitude, destin.longitude),
+         APIDirections.Location(lat:origin.latitude,lng: origin.longitude),
+         APIDirections.Location(lat:destin.latitude,lng: destin.longitude),
         travelMode: APIDirections.TravelMode.driving
     );
     if (resDirections.isOkay) {

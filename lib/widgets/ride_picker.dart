@@ -3,7 +3,6 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:ura_taxi/widgets/ride_picker_page.dart';
-
 import '../model/place_item_res.dart';
 
 class RidePicker extends StatefulWidget {
@@ -64,7 +63,23 @@ class _RidePickerState extends State<RidePicker> {
                           setState(() {});
                         }, true)));*/
                 Prediction? p = await PlacesAutocomplete.show(
-                    context: context, apiKey: kGoogleApiKey);
+                    context: context,
+                    apiKey: kGoogleApiKey,
+                  radius: 10000000,
+                  types: [],
+                  strictbounds: false,
+                  mode: Mode.overlay,
+                  language: "fr",
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  components: [Component(Component.country, "fr")],);
                 displayPrediction(p!);
 
               },
@@ -85,7 +100,7 @@ class _RidePickerState extends State<RidePicker> {
                             decoration: BoxDecoration(color: Colors.black)),
                       ),
                     ),
-                    Positioned(
+                    const Positioned(
                       right: 0,
                       top: 0,
                       width: 40,

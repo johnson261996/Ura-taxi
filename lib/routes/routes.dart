@@ -18,7 +18,7 @@ class Routes {
   static const forgotpassword = "/forgotpassword";
   static const home = "/home";
   static const profile = "/profile";
-
+  static const mytrips = "/mytrips";
 
   static Map<String, WidgetBuilder> get buildRoutes {
     return {
@@ -33,6 +33,8 @@ class Routes {
       home: (BuildContext context) =>
       const BaseLayout(page: HomeScreen(), isAppBar: false,),
       profile: (BuildContext context) =>
+      const BaseLayout(page: HomeScreen(), isAppBar: false,),
+      mytrips: (BuildContext context) =>
       const BaseLayout(page: HomeScreen(), isAppBar: false,)
     };
   }

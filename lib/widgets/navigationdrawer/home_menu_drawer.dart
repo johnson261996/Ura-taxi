@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/images.dart';
 import 'package:ura_taxi/routes/routes.dart';
+import 'package:ura_taxi/screens/profile/profile.dart';
+import 'package:ura_taxi/screens/trips/mytrips.dart';
 import 'package:ura_taxi/utils/navigations.dart';
 import 'package:ura_taxi/widgets/profile/profile_widget.dart';
 
@@ -88,17 +90,20 @@ class _HomeMenuDrawerState extends State<HomeMenuDrawer> {
 }
 
 void openDrawerItems(BuildContext context,String DrawerItemName) {
-  final List<String>  arr_drawer_items = ['profile','notification','trips','payment','promo'];
+
   if("profile".toLowerCase()==DrawerItemName.toLowerCase()){
     Future.delayed(Duration.zero, () {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => ProfileWidget()));
+          builder: (BuildContext context) => ProfileScreen()));
     });
 
   }else if("Notifications"==DrawerItemName){
 
-  }else if("My Rides"==DrawerItemName){
-
+  }else if("My Rides".toLowerCase()==DrawerItemName.toLowerCase()){
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => MyTripsScreen()));
+    });
   }else if("Payment"==DrawerItemName){
 
   }
