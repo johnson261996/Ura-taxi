@@ -4,9 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:ura_taxi/routes/routes.dart';
 import 'package:ura_taxi/utils/navigations.dart';
 import '../../model/place_item_res.dart';
+import '../../states/app_state.dart';
 import '../../utils/map_util.dart';
 import '../navigationdrawer/home_menu_drawer.dart';
 import '../ride_picker.dart';
@@ -33,7 +35,13 @@ class _HomeWidgetState extends State<HomeWidget> {
 
 
   @override
+  void initState() {
+    _currentLocation();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
@@ -54,11 +62,10 @@ class _HomeWidgetState extends State<HomeWidget> {
               target: _center,
               zoom: 13.0,
             ),
-            onMapCreated: (GoogleMapController controller) {
-              _completer.complete(controller);
-            },
-            markers: Set<Marker>.of(_markers),
-            polylines: Set<Polyline>.of(routes),
+            onMapCreated: appState.onCreated,
+            markers: appState.markers,
+            onCameraMove: appState.onCameraMove,
+            polylines: appState.polyLines,
           ),
           Positioned(
             left: 0,

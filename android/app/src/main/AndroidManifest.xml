@@ -5,9 +5,15 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+       <meta-data android:name="com.facebook.sdk.ApplicationId"
+           android:value="2510544259078187"/>
+
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyDdTqq2YrVXn4f-vctC0lanJ5VrVA_8wzU"/>
-        <activity
+       <meta-data android:name="com.facebook.sdk.ClientToken"
+           android:value="27e192aa21ecac889239a9c2f8521db7"/>
+
+       <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"

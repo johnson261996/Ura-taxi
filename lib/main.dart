@@ -1,11 +1,23 @@
 //@dart=2.9
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ura_taxi/routes/routes.dart';
 import 'package:ura_taxi/screens/splash/splash.dart';
+import 'package:ura_taxi/states/app_state.dart';
 
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(/*options:
+  FirebaseOptions(appId: "1:911864620462:android:8d6e41f41fcf83f8e7143f",
+  projectId: "ura-taxi-347103", messagingSenderId: '911864620462'),*/);
+  return runApp(
+      MultiProvider(
+        providers: [
+        ChangeNotifierProvider.value(value: AppState(),)
+  ],
+    child: const MyApp(),));
 }
 
 class MyApp extends StatelessWidget {

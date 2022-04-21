@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:ura_taxi/widgets/ride_picker_page.dart';
 import '../model/place_item_res.dart';
+import '../states/app_state.dart';
 
 class RidePicker extends StatefulWidget {
   final Function(PlaceItemRes, bool) onSelected;
@@ -15,29 +17,15 @@ class RidePicker extends StatefulWidget {
 class _RidePickerState extends State<RidePicker> {
    PlaceItemRes fromAddress = PlaceItemRes("", "address", 4125, 1545454);
    PlaceItemRes toAddress = PlaceItemRes("", "address", 4125, 1545454);
-   static const kGoogleApiKey = "AIzaSyDdTqq2YrVXn4f-vctC0lanJ5VrVA_8wzU";
-
-   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 
-   Future<Null> displayPrediction(Prediction? p) async {
-     if (p != null) {
-       PlacesDetailsResponse detail =
-       await _places.getDetailsByPlaceId(p.placeId!);
-
-       var placeId = p.placeId;
-       double lat = detail.result.geometry!.location.lat;
-       double lng = detail.result.geometry!.location.lng;
-
-       var address = await Geocoder.local.findAddressesFromQuery(p.description);
-
-       print(lat);
-       print(lng);
-     }
-   }
+   @override
+  void initState() {
+  }
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -52,138 +40,64 @@ class _RidePickerState extends State<RidePicker> {
           Container(
             width: double.infinity,
             height: 50,
-            child: OutlinedButton(
-              onPressed: ()async {
-             /*   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => RidePickerPage(fromAddress == null ? "" :fromAddress.name,
-                            (place, isFrom) {
-
-                          widget.onSelected(place, isFrom);
-                          fromAddress = place;
-                          setState(() {});
-                        }, true)));*/
-                Prediction? p = await PlacesAutocomplete.show(
-                    context: context,
-                    apiKey: kGoogleApiKey,
-                  radius: 10000000,
-                  types: [],
-                  strictbounds: false,
-                  mode: Mode.overlay,
-                  language: "fr",
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
-                    ),
+            child: TextFormField(
+              cursorColor: Colors.black,
+             controller: appState.locationController,
+              decoration: InputDecoration(
+                icon: Container(
+                  margin: EdgeInsets.only(left: 20, top: 5),
+                  width: 10,
+                  height: 10,
+                  child: Icon(
+                    Icons.location_on,
+                    color: Colors.black,
                   ),
-                  components: [Component(Component.country, "fr")],);
-                displayPrediction(p!);
-
-              },
-              child: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: Stack(
-                  alignment: AlignmentDirectional.centerStart,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 40.0,
-                      width: 50.0,
-                      child: Center(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 2),
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(color: Colors.black)),
-                      ),
-                    ),
-                    const Positioned(
-                      right: 0,
-                      top: 0,
-                      width: 40,
-                      height: 50,
-                      child: Center(
-                        child: Icon(
-                          Icons.close,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 40.0, right: 50.0),
-                      child: Text(
-                        "pickup location" ,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16, color: fromAddress == null ? Colors.grey : Colors.black),
-                      ),
-                    )
-                  ],
                 ),
+                hintText: "pick up",
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(left: 15.0, top: 16.0),
               ),
             ),
-          ),
-          Divider(),
-          Container(
-            width: double.infinity,
-            height: 50,
-            child: OutlinedButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        RidePickerPage(toAddress == null ? '' : toAddress.name,
-                                (place, isFrom) {
-                              widget.onSelected(place, isFrom);
-                              toAddress = place;
-                              setState(() {});
-                            }, false)));
-              },
-              child: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: Stack(
-                  alignment: AlignmentDirectional.centerStart,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 40.0,
-                      width: 50.0,
-                      child: Center(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 2),
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(color: Colors.blue)),
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      width: 40,
-                      height: 50,
-                      child: Center(
-                        child: Icon(
-                          Icons.close,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 40.0, right: 50.0),
-                      child: Text(
-                         "where to go ?",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16, color: toAddress == null ? Colors.grey: Colors.black),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
-    );
+          Container(
+            height: 50.0,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3.0),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(1.0, 5.0),
+                    blurRadius: 10,
+                    spreadRadius: 3)
+              ],
+            ),
+            child: TextField(
+              cursorColor: Colors.black,
+              controller: appState.destinationController,
+              textInputAction: TextInputAction.go,
+              onSubmitted: (value) {
+                appState.sendRequest(value);
+              },
+              decoration: InputDecoration(
+                icon: Container(
+                  margin: EdgeInsets.only(left: 20, top: 5),
+                  width: 10,
+                  height: 10,
+                  child: Icon(
+                    Icons.local_taxi,
+                    color: Colors.black,
+                  ),
+                ),
+                hintText: "destination?",
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(left: 15.0, top: 16.0),
+              ),
+            ),
+          ),
+            ]
+          ),
+       );
   }
 }

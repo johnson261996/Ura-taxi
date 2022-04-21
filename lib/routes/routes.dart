@@ -5,6 +5,7 @@ import 'package:ura_taxi/screens/auth/forgotpassword.dart';
 import 'package:ura_taxi/screens/auth/login.dart';
 import 'package:ura_taxi/screens/auth/signup.dart';
 import 'package:ura_taxi/screens/home/home.dart';
+import 'package:ura_taxi/screens/notification/notification.dart';
 import 'package:ura_taxi/screens/splash/splash.dart';
 import 'package:ura_taxi/widgets/home/home_widget.dart';
 
@@ -19,6 +20,9 @@ class Routes {
   static const home = "/home";
   static const profile = "/profile";
   static const mytrips = "/mytrips";
+  static const payment = "/payment";
+  static const promocode = "/promo";
+  static const notification="/notification";
 
   static Map<String, WidgetBuilder> get buildRoutes {
     return {
@@ -35,7 +39,13 @@ class Routes {
       profile: (BuildContext context) =>
       const BaseLayout(page: HomeScreen(), isAppBar: false,),
       mytrips: (BuildContext context) =>
-      const BaseLayout(page: HomeScreen(), isAppBar: false,)
+      const BaseLayout(page: HomeScreen(), isAppBar: false,),
+      payment: (BuildContext context) =>
+      const BaseLayout(page: HomeScreen(), isAppBar: false,),
+      promocode: (BuildContext context) =>
+      const BaseLayout(page: HomeScreen(), isAppBar: false,),
+      notification: (BuildContext context) =>
+      const BaseLayout(page: NotificationScreen(), isAppBar: false,)
     };
   }
 }

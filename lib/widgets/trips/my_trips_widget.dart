@@ -17,20 +17,8 @@ class _MyTripsWidgetState extends State<MyTripsWidget> {
       appBar:  AppBar(
         backgroundColor: Color(0xff804ed1),
         title: Text('My Trips'),
-   /*     bottom:  const TabBar(
-          tabs: [
-            Tab(text: "Past",),
-            Tab(text: "Upcoming",),
-          ],
-        ),*/
       ),
-      body:/* const TabBarView(
-      children: [
-        Icon(Icons.flight, size: 350),
-        Icon(Icons.directions_transit, size: 350),
-      ],
-     )*/
-      DefaultTabController(
+      body: DefaultTabController(
         length: 2,
         child: Column(
           children: <Widget>[

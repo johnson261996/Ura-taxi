@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/images.dart';
 import 'package:ura_taxi/routes/routes.dart';
+import 'package:ura_taxi/screens/invite/invite.dart';
+import 'package:ura_taxi/screens/notification/notification.dart';
+import 'package:ura_taxi/screens/payment/payment.dart';
 import 'package:ura_taxi/screens/profile/profile.dart';
+import 'package:ura_taxi/screens/promo/promo.dart';
 import 'package:ura_taxi/screens/trips/mytrips.dart';
-import 'package:ura_taxi/utils/navigations.dart';
-import 'package:ura_taxi/widgets/profile/profile_widget.dart';
 
 class HomeMenuDrawer extends StatefulWidget {
   HomeMenuDrawer({required Key? key}) : super(key: key);
@@ -98,14 +100,30 @@ void openDrawerItems(BuildContext context,String DrawerItemName) {
     });
 
   }else if("Notifications"==DrawerItemName){
-
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => NotificationScreen()));
+    });
   }else if("My Rides".toLowerCase()==DrawerItemName.toLowerCase()){
     Future.delayed(Duration.zero, () {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => MyTripsScreen()));
     });
   }else if("Payment"==DrawerItemName){
-
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => PaymentScreen()));
+    });
+  }else if("Promo code"==DrawerItemName){
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => PromoCodeScreen()));
+    });
+  }else if("Invite"==DrawerItemName){
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => InviteScreen()));
+    });
   }
 }
 
