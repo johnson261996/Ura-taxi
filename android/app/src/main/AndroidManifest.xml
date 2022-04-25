@@ -1,5 +1,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.uiprocorp.urataxi.ura_taxi">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <queries>
+        <!-- If your app opens https URLs -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <!-- If your app makes calls -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
+        <!-- If your sends SMS messages -->
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="smsto" />
+        </intent>
+        <!-- If your app sends emails -->
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="*/*" />
+        </intent>
+    </queries>
    <application
         android:label="ura taxi"
         android:name="${applicationName}"
@@ -9,7 +33,7 @@
            android:value="2510544259078187"/>
 
        <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyDdTqq2YrVXn4f-vctC0lanJ5VrVA_8wzU"/>
+           android:value="AIzaSyA94M7pjj-T_-FwCrYbnbKhWt5sWDNPeS4"/>
        <meta-data android:name="com.facebook.sdk.ClientToken"
            android:value="27e192aa21ecac889239a9c2f8521db7"/>
 

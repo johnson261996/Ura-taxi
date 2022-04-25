@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/images.dart';
 import 'package:ura_taxi/routes/routes.dart';
+import 'package:ura_taxi/screens/about/about_us.dart';
 import 'package:ura_taxi/screens/invite/invite.dart';
 import 'package:ura_taxi/screens/notification/notification.dart';
 import 'package:ura_taxi/screens/payment/payment.dart';
 import 'package:ura_taxi/screens/profile/profile.dart';
 import 'package:ura_taxi/screens/promo/promo.dart';
 import 'package:ura_taxi/screens/trips/mytrips.dart';
+import 'package:ura_taxi/widgets/privacy/privacy_policy_widget.dart';
+import 'package:ura_taxi/widgets/support/support_widget.dart';
 
 class HomeMenuDrawer extends StatefulWidget {
   HomeMenuDrawer({required Key? key}) : super(key: key);
@@ -56,8 +59,8 @@ class _HomeMenuDrawerState extends State<HomeMenuDrawer> {
           linkMenuDrawer(context,'Invite',Icons.insert_invitation ,),
           linkMenuDrawer(context,'About us',Icons.info_outline ,),
           linkMenuDrawer(context,'Support',Icons.chat ,),
-          linkMenuDrawer(context,'Privacy and Policy',Icons.shield ,)
-
+          linkMenuDrawer(context,'Privacy and Policy',Icons.shield ,),
+          linkMenuDrawer(context,'Log out',Icons.logout ,)
         ]),
       ],
     );
@@ -123,6 +126,22 @@ void openDrawerItems(BuildContext context,String DrawerItemName) {
     Future.delayed(Duration.zero, () {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => InviteScreen()));
+    });
+  }else if("About us"==DrawerItemName){
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => AboutUsScreen()));
+    });
+  }else if("Support"==DrawerItemName){
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => SupportWidget()));
+    });
+  }else if("Privacy and Policy"==DrawerItemName){
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => PrivacyPolicyWidget(
+          )));
     });
   }
 }

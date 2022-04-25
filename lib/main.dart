@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ura_taxi/routes/routes.dart';
 import 'package:ura_taxi/screens/splash/splash.dart';
-import 'package:ura_taxi/states/app_state.dart';
 
 
 Future<void> main() async{
@@ -13,11 +12,7 @@ Future<void> main() async{
   FirebaseOptions(appId: "1:911864620462:android:8d6e41f41fcf83f8e7143f",
   projectId: "ura-taxi-347103", messagingSenderId: '911864620462'),*/);
   return runApp(
-      MultiProvider(
-        providers: [
-        ChangeNotifierProvider.value(value: AppState(),)
-  ],
-    child: const MyApp(),));
+      const MyApp());
 }
 
 class MyApp extends StatelessWidget {

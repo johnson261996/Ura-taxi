@@ -106,25 +106,37 @@ class _MyTripsCardState extends State<MyTripsCard> {
                     Flexible(child: Text("Kodi Post Office, Kodi Rd, Kundapura, Karnataka 576201"))
                   ],
                 ),
-                IconTheme(
-                  data: new IconThemeData(
-                      color: Colors.black,size: 10),
-                  child: new Icon(Icons.circle),
+                Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: IconTheme(
+                    data: new IconThemeData(
+                        color: Colors.black,size: 10),
+                    child: new Icon(Icons.circle),
+                  ),
                 ),
-                IconTheme(
-                  data: new IconThemeData(
-                      color: Colors.black,size: 10),
-                  child: new Icon(Icons.circle),
+                Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: IconTheme(
+                    data: new IconThemeData(
+                        color: Colors.black,size: 10),
+                    child: new Icon(Icons.circle),
+                  ),
                 ),
-                IconTheme(
-                  data: new IconThemeData(
-                      color: Colors.black,size: 10),
-                  child: new Icon(Icons.circle),
+                Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: IconTheme(
+                    data: new IconThemeData(
+                        color: Colors.black,size: 10),
+                    child: new Icon(Icons.circle),
+                  ),
                 ),
-                IconTheme(
-                  data: new IconThemeData(
-                      color: Colors.black,size: 10),
-                  child: new Icon(Icons.circle),
+                Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: IconTheme(
+                    data: new IconThemeData(
+                        color: Colors.black,size: 10),
+                    child: new Icon(Icons.circle),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

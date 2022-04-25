@@ -36,14 +36,19 @@ class _IntroWidgetState extends State<IntroWidget> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        actions: const <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20, top: 20),
-            child: Text('Skip', style: TextStyle(
-                color: Colors.grey,
-                fontSize: 18,
-                fontWeight: FontWeight.w400
-            ),),
+        actions:  <Widget>[
+          GestureDetector(
+            onTap: (){
+              Navigator.pushReplacementNamed(context, Routes.login);
+            },
+            child: Padding(
+              padding: EdgeInsets.only(right: 20, top: 20),
+              child: Text('Skip', style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400
+              ),),
+            ),
           )
         ],
       ),
