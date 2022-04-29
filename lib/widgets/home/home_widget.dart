@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:uuid/uuid.dart';
+import '../../common/address_search.dart';
+import '../../model/place.dart';
+import '../../provider/PlaceApiProvider.dart';
 import '../navigationdrawer/home_menu_drawer.dart';
+import 'choose_ride_widget.dart';
 
 class HomeWidget extends StatefulWidget {
 
@@ -44,20 +49,31 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   bool done = false;
   late String error;
+  final  sessionToken = Uuid().v4();
+  late PlaceApiProvider apiClient;
+
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+
+  }
+  @override
+  void dispose() {
+    startAddressController.dispose();
+    destinationAddressController.dispose();
+    super.dispose();
+
   }
 
   Widget _textField({
     required TextEditingController controller,
     required FocusNode focusNode,
-    required String label,
     required String hint,
     required double width,
     required Icon prefixIcon,
+    required bool readonly,
     Widget? suffixIcon,
     required Function(String) locationCallback,
   }) {
@@ -69,10 +85,10 @@ class _HomeWidgetState extends State<HomeWidget> {
         },
         controller: controller,
         focusNode: focusNode,
-        decoration: new InputDecoration(
+        readOnly: readonly ,
+        decoration:  InputDecoration(
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
-          labelText: label,
           filled: true,
           fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
@@ -102,6 +118,17 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    void showBottomPanel() {
+      showModalBottomSheet(context: context, builder: (context){
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
+          child:  ChooseRideWidget(),
+        );
+      });
+    }
+    double deviceHeight(BuildContext context) => MediaQuery.of(context).size.height;
+
+    double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -152,9 +179,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ),
                 SafeArea(
                   child: Align(
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                      padding:  EdgeInsets.only(top:deviceHeight(context) *0.550 ),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white70,
@@ -169,38 +196,76 @@ class _HomeWidgetState extends State<HomeWidget> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               SizedBox(height: 10),
-                              _textField(
-                                  label: 'Start',
-                                  hint: 'pick up',
-                                  prefixIcon: Icon(Icons.looks_one),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.my_location),
-                                    onPressed: () {
-                                      startAddressController.text = _currentAddress;
-                                      _startAddress = _currentAddress;
-                                    },
-                                  ),
-                                  controller: startAddressController,
-                                  focusNode: startAddressFocusNode,
-                                  width: width,
-                                  locationCallback: (String value) {
+                              InkWell(
+                                onTap: ()async{
+                                  final Suggestion? result = await showSearch(
+                                    context: context,
+                                    delegate: AddressSearch(sessionToken),
+
+                                  );
+                                  // This will change the text displayed in the TextField
+                                  if (result != null) {
+                                    final placeDetails = await PlaceApiProvider(sessionToken)
+                                        .getPlaceDetailFromId(result.placeId);
                                     setState(() {
-                                      _startAddress = value;
+                                      startAddressController.text = result.description;
+                                      _startAddress =   startAddressController.text ;
                                     });
-                                  }),
+                                  }
+                                },
+                                child: AbsorbPointer(
+                                  child: _textField(
+                                     // label: 'Start',
+                                      hint: 'pick up',
+                                      readonly: false,
+                                      prefixIcon: Icon(Icons.circle,color: Colors.green,size: 10,),
+                                      controller: startAddressController,
+                                      focusNode: startAddressFocusNode,
+                                      width: width,
+                                      locationCallback: (String value) {
+                                        setState(() {
+                                          _startAddress = value;
+                                          _startAddress =   startAddressController.text ;
+                                        });
+                                      }),
+                                ),
+                              ),
                               SizedBox(height: 10),
-                              _textField(
-                                  label: 'Destination',
-                                  hint: 'where to go?',
-                                  prefixIcon: Icon(Icons.looks_two),
-                                  controller: destinationAddressController,
-                                  focusNode: desrinationAddressFocusNode,
-                                  width: width,
-                                  locationCallback: (String value) {
+                              InkWell(
+                                onTap: ()async{
+                                  final Suggestion? result = await showSearch(
+                                    context: context,
+                                    delegate: AddressSearch(sessionToken),
+                                  );
+                                  // This will change the text displayed in the TextField
+                                  if (result != null) {
+                                    final placeDetails = await PlaceApiProvider(sessionToken)
+                                        .getPlaceDetailFromId(result.placeId);
                                     setState(() {
-                                      _destinationAddress = value;
+                                      destinationAddressController.text = result.description;
+                                      _destinationAddress= destinationAddressController.text;
                                     });
-                                  }),
+                                  }
+                                },
+                                child: AbsorbPointer(
+                                  child: _textField(
+                                     // label: 'Destination',
+                                      hint: 'where to go?',
+                                      readonly: true,
+                                      prefixIcon: Icon(Icons.circle,color: Colors.red,size: 10,),
+                                      controller: destinationAddressController,
+                                      focusNode: desrinationAddressFocusNode,
+                                      width: width,
+                                      locationCallback: (String value)  {
+                                        setState(() {
+
+                                          _destinationAddress = value;
+                                          _destinationAddress= destinationAddressController.text;
+                                        });
+                                      },
+                                  ),
+                                ),
+                              ),
                               SizedBox(height: 10),
                               Visibility(
                                 visible: _placeDistance == null ? false : true,
@@ -247,6 +312,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       );
                                     }
                                   });
+                                  showBottomPanel();
                                 }: null,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -259,7 +325,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   ),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.red,
+                                  primary: Colors.purpleAccent,
+                                  minimumSize: Size(width*0.8, 48),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
@@ -277,10 +344,10 @@ class _HomeWidgetState extends State<HomeWidget> {
           ),
           Positioned(
             left: 0,
-            bottom:100,
-            right: 5,
+            top:deviceHeight(context)*0.640,
+            right: 20,
             child: Align(
-              alignment: Alignment.bottomRight,
+              alignment: Alignment.topRight,
               // add your floating action button
               child: FloatingActionButton(
                 backgroundColor: Colors.white,
@@ -297,9 +364,20 @@ class _HomeWidgetState extends State<HomeWidget> {
 
 // Method for retrieving the current location
   _getCurrentLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location Not Available');
+      }
+    } else {
+      throw Exception('Error');
+    }
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) async {
       setState(() {
+        print("current location");
         _currentPosition = position;
         print('CURRENT POS: $_currentPosition');
         mapController.animateCamera(
@@ -504,7 +582,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     PolylineId id = PolylineId('poly');
     Polyline polyline = Polyline(
       polylineId: id,
-      color: Colors.red,
+      color: Colors.purple,
       points: polylineCoordinates,
       width: 3,
     );
