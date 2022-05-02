@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "911864620462",
+    "project_id": "ura-taxi-347103",
+    "storage_bucket": "ura-taxi-347103.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911864620462:android:8d6e41f41fcf83f8e7143f",
+        "android_client_info": {
+          "package_name": "com.uiprocorp.urataxi.ura_taxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911864620462-nfpueqs594k53kvt0iv6k55kmvtbaaqr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uiprocorp.urataxi.ura_taxi",
+            "certificate_hash": "8d280220d9b5ab3c366ee635ab0e9a3dafd6fc2a"
+          }
+        },
+        {
+          "client_id": "911864620462-fj0h4dd83tu8ppbehe85qg2u3t5g58o8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdTqq2YrVXn4f-vctC0lanJ5VrVA_8wzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911864620462-fj0h4dd83tu8ppbehe85qg2u3t5g58o8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
