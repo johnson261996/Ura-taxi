@@ -7,11 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:uuid/uuid.dart';
-import '../../common/address_search.dart';
 import '../../model/place.dart';
-import '../../provider/PlaceApiProvider.dart';
 import '../navigationdrawer/home_menu_drawer.dart';
-import 'choose_ride_widget.dart';
 
 class HomeWidget extends StatefulWidget {
 
@@ -20,6 +17,7 @@ class HomeWidget extends StatefulWidget {
   @override
   State<HomeWidget> createState() => _HomeWidgetState();
 }
+
 
 class _HomeWidgetState extends State<HomeWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKey =  GlobalKey();
@@ -50,7 +48,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   bool done = false;
   late String error;
   final  sessionToken = Uuid().v4();
-  late PlaceApiProvider apiClient;
+  //late PlaceApiProvider apiClient;
 
 
   @override
@@ -121,8 +119,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     void showBottomPanel() {
       showModalBottomSheet(context: context, builder: (context){
         return Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
-          child:  ChooseRideWidget(),
+
         );
       });
     }
@@ -198,7 +195,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                               SizedBox(height: 10),
                               InkWell(
                                 onTap: ()async{
-                                  final Suggestion? result = await showSearch(
+                             /*     final Suggestion? result = await showSearch(
                                     context: context,
                                     delegate: AddressSearch(sessionToken),
 
@@ -211,7 +208,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       startAddressController.text = result.description;
                                       _startAddress =   startAddressController.text ;
                                     });
-                                  }
+                                  }*/
                                 },
                                 child: AbsorbPointer(
                                   child: _textField(
@@ -233,7 +230,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                               SizedBox(height: 10),
                               InkWell(
                                 onTap: ()async{
-                                  final Suggestion? result = await showSearch(
+                             /*     final Suggestion? result = await showSearch(
                                     context: context,
                                     delegate: AddressSearch(sessionToken),
                                   );
@@ -245,7 +242,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       destinationAddressController.text = result.description;
                                       _destinationAddress= destinationAddressController.text;
                                     });
-                                  }
+                                  }*/
                                 },
                                 child: AbsorbPointer(
                                   child: _textField(

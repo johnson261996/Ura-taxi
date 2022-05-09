@@ -9,6 +9,10 @@ class Strings {
   static const about_us_title = "With Ura Taxi, you can get local taxi at the tap of a button "
       "No need to try to hail a cab from the curb. Request a local taxi with the Ura taxi app.";
   static const about_us_sub_title = "Founders: Ura taxi is founded in Dec 2021 by prabhat sharma ";
+  static const notification_1 = "Need a ride?";
+  static const notification_2 = "Now make it anywhere, everyday. just cut through traffic and reach wherever you want, quickly"
+  "and comfortably.just book a rapido today ";
+  static const promo_code_hint = "Have a Promo code? Insert here";
   static const someone_take_ride_title = "Someone else taking this ride?";
   static const someone_take_ride_subtitle = "Choose a contact so that they also get driver number,vehicle details and ride OTP via SMS";
   static const privacy_policy = "Your privacy matters to ANI Technologies Private Limited (the “Company”, “we”, “ura”, or “us”)."

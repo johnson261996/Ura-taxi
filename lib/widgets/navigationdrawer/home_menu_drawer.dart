@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/images.dart';
-import 'package:ura_taxi/routes/routes.dart';
-import 'package:ura_taxi/screens/about/about_us.dart';
+
 import 'package:ura_taxi/screens/invite/invite.dart';
 import 'package:ura_taxi/screens/notification/notification.dart';
 import 'package:ura_taxi/screens/payment/payment.dart';
+import 'package:ura_taxi/screens/privacy/privacy.dart';
 import 'package:ura_taxi/screens/profile/profile.dart';
-import 'package:ura_taxi/screens/promo/promo.dart';
+import 'package:ura_taxi/screens/support/support.dart';
 import 'package:ura_taxi/screens/trips/mytrips.dart';
-import 'package:ura_taxi/widgets/privacy/privacy_policy_widget.dart';
-import 'package:ura_taxi/widgets/support/support_widget.dart';
+import '../../screens/about/about.dart';
+import '../../screens/promocode/promocode.dart';
 
 class HomeMenuDrawer extends StatefulWidget {
   HomeMenuDrawer({required Key? key}) : super(key: key);
@@ -72,7 +72,6 @@ class _HomeMenuDrawerState extends State<HomeMenuDrawer> {
   return InkWell(
     onTap: (){
       Future.delayed(Duration.zero, () {
-
         openDrawerItems(context,title);
       });
     },
@@ -135,12 +134,12 @@ void openDrawerItems(BuildContext context,String DrawerItemName) {
   }else if("Support"==DrawerItemName){
     Future.delayed(Duration.zero, () {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => SupportWidget()));
+          builder: (BuildContext context) => SupportScreen()));
     });
   }else if("Privacy and Policy"==DrawerItemName){
     Future.delayed(Duration.zero, () {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => PrivacyPolicyWidget(
+          builder: (BuildContext context) => PrivacyPolicyScreen(
           )));
     });
   }
