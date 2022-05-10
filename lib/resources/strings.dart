@@ -13,9 +13,10 @@ class Strings {
   static const notification_2 = "Now make it anywhere, everyday. just cut through traffic and reach wherever you want, quickly"
   "and comfortably.just book a rapido today ";
   static const promo_code_hint = "Have a Promo code? Insert here";
+  static const support_title = "Hello, how can we help?";
   static const someone_take_ride_title = "Someone else taking this ride?";
   static const someone_take_ride_subtitle = "Choose a contact so that they also get driver number,vehicle details and ride OTP via SMS";
-  static const privacy_policy = "Your privacy matters to ANI Technologies Private Limited (the “Company”, “we”, “ura”, or “us”)."
+  static const privacy_policy = "Welcome to Urataxi \nUra taxi(the “Company”, “we”, “ura”, or “us”). operates urataxi.com"
   "This Privacy Policy explains how we collect, process, use, share and protect information about you. It also tells you how you"
       " can access and update your information and make certain choices"
   "about how your information is used."
@@ -32,7 +33,7 @@ class Strings {
   "Terms and Conditions or use our Services. This Privacy Policy is incorporated by reference into the Customer Terms and Conditions."
   "If you have questions about this Privacy Policy, please contact us through email address provided on our website and/ or Mobile Application.";
 
-  static const privacy_policy2 = "DEFINITIONS Unless otherwise provided in this Privacy Policy, the terms capitalized in the Privacy Policy shall"
+  static const privacy_policy2 = " Unless otherwise provided in this Privacy Policy, the terms capitalized in the Privacy Policy shall"
  " have the meaning as provided hereunder:"
   """“Co-branded Services” shall have the meaning assigned to the term in paragraph 4(c) hereto.
   “Device” shall mean computer, mobile or other device used to access the Services.

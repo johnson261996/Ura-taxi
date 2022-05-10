@@ -54,7 +54,10 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    setState(() {
+      _getCurrentLocation();
+    });
+
 
   }
   @override

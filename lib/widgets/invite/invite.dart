@@ -23,7 +23,10 @@ class _InviteWidgetState extends State<InviteWidget> {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: null,
+      appBar:  AppBar(
+        backgroundColor: Color(0xff804ed1),
+        title: Text('Invite'),
+      ),
       extendBody: true,
       body: SafeArea(
         child: Container(
@@ -50,9 +53,6 @@ class _InviteWidgetState extends State<InviteWidget> {
                       ),
                     ),
                   ),
-
-
-
                   Container(
                     height: 200.0,
                     width: 200.0,
@@ -60,7 +60,7 @@ class _InviteWidgetState extends State<InviteWidget> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(
-                          'assets/images/refer.png',),
+                          'assets/images/refer_img.png',),
                         fit: BoxFit.fill,
                       ),
                       shape: BoxShape.circle,
@@ -79,7 +79,6 @@ class _InviteWidgetState extends State<InviteWidget> {
                       ),
                     ),
                   ),
-
                   Container(
                       height: mediaQuery.height * 0.06,
                       width: mediaQuery.width * 0.9,
@@ -141,7 +140,7 @@ class _InviteWidgetState extends State<InviteWidget> {
                                   launchWhatsApp();
                                 },
                                 label: Text('Whatsapp'),
-                                icon: Image.asset('assets/images/whatsapp.png',width: 20,height: 20,),
+                                icon: Image.asset('assets/images/whatsapp_icon.png',width: 20,height: 20,),
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.green,
                                 ),
@@ -159,7 +158,7 @@ class _InviteWidgetState extends State<InviteWidget> {
                                       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
                                 },
                                 label: Text('More Option'),
-                                icon: Image.asset('assets/images/share.png',width: 20,height: 20,),
+                                icon: Image.asset('assets/images/share_icon.png',width: 20,height: 20,),
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.red,
                                 ),
