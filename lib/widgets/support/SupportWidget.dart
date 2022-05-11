@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/strings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupportWidget extends StatefulWidget {
   const SupportWidget({Key? key}) : super(key: key);
@@ -13,6 +14,11 @@ class SupportWidget extends StatefulWidget {
 class _SupportWidgetState extends State<SupportWidget> {
   final _text = TextEditingController();
   bool _validate = false;
+ static final  Uri params = Uri(
+    scheme: 'mailto',
+    path: 'contact@urataxi.com',
+    query: 'subject=App Feedback&body=App Version 3.23', //add subject and body here
+  );
 
   @override
   void dispose() {
@@ -66,48 +72,68 @@ class _SupportWidgetState extends State<SupportWidget> {
                 child: Text("Contatc Us",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),)
             ),
             SizedBox(height: 20,),
-            Container(
-              height: 80,
-              child: Card(
-                elevation: 5,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.call,
-                        color: Color(0xff804ed1),
-                        size: 20.0,
-                        textDirection: TextDirection.ltr,
-                        semanticLabel: 'Icon', // Announced in accessibility modes (e.g TalkBack/VoiceOver). This label does not show in the UI.
-                      ),
-                      SizedBox(width: 10,),
-                      Text("918864652525",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
-                    ],
+            GestureDetector(
+              onTap: ()async{
+                String telephoneNumber = '+919445454545';
+                if(await canLaunchUrl(Uri(scheme: "tel",path: telephoneNumber))){
+                   await launchUrl(Uri(scheme: "tel",path: telephoneNumber));
+                } else {
+                  throw 'Could not launch ';
+                }
+              },
+              child: Container(
+                height: 80,
+                child: Card(
+                  elevation: 5,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.call,
+                          color: Color(0xff804ed1),
+                          size: 20.0,
+                          textDirection: TextDirection.ltr,
+                          semanticLabel: 'Icon', // Announced in accessibility modes (e.g TalkBack/VoiceOver). This label does not show in the UI.
+                        ),
+                        SizedBox(width: 10,),
+                        Text("918864652525",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-            Container(
-              height: 80,
-              child: Card(
-                elevation: 5,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.mail_outline,
-                        color: Color(0xff804ed1),
-                        size: 20.0,
-                        textDirection: TextDirection.ltr,
-                        semanticLabel: 'Icon', // Announced in accessibility modes (e.g TalkBack/VoiceOver). This label does not show in the UI.
-                      ),
-                      SizedBox(width: 10,),
-                      Text("contact@urataxi.com",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
-                    ],
+            GestureDetector(
+              onTap: ()async{
+                var url = params.toString();
+                if (await canLaunchUrl(params)) {
+                await launchUrl(params);
+                } else {
+                throw 'Could not launch $url';
+                }
+              },
+              child: Container(
+                height: 80,
+                child: Card(
+                  elevation: 5,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.mail_outline,
+                          color: Color(0xff804ed1),
+                          size: 20.0,
+                          textDirection: TextDirection.ltr,
+                          semanticLabel: 'Icon', // Announced in accessibility modes (e.g TalkBack/VoiceOver). This label does not show in the UI.
+                        ),
+                        SizedBox(width: 10,),
+                        Text("contact@urataxi.com",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                      ],
+                    ),
                   ),
                 ),
               ),

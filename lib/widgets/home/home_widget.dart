@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:location/location.dart' as loc;
+import 'package:location/location.dart';
+import 'package:ura_taxi/widgets/home/search_address_widget.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/place.dart';
 import '../navigationdrawer/home_menu_drawer.dart';
@@ -55,10 +58,9 @@ class _HomeWidgetState extends State<HomeWidget> {
   void initState() {
     super.initState();
     setState(() {
-      _getCurrentLocation();
+    //  _getCurrentLocation();
+      getLocation();
     });
-
-
   }
   @override
   void dispose() {
@@ -198,7 +200,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                               SizedBox(height: 10),
                               InkWell(
                                 onTap: ()async{
-                             /*     final Suggestion? result = await showSearch(
+                                  final Suggestion? result = await showSearch(
                                     context: context,
                                     delegate: AddressSearch(sessionToken),
 
@@ -211,7 +213,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       startAddressController.text = result.description;
                                       _startAddress =   startAddressController.text ;
                                     });
-                                  }*/
+                                  }
                                 },
                                 child: AbsorbPointer(
                                   child: _textField(
@@ -233,7 +235,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                               SizedBox(height: 10),
                               InkWell(
                                 onTap: ()async{
-                             /*     final Suggestion? result = await showSearch(
+                                  final Suggestion? result = await showSearch(
                                     context: context,
                                     delegate: AddressSearch(sessionToken),
                                   );
@@ -245,7 +247,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       destinationAddressController.text = result.description;
                                       _destinationAddress= destinationAddressController.text;
                                     });
-                                  }*/
+                                  }
                                 },
                                 child: AbsorbPointer(
                                   child: _textField(
@@ -293,7 +295,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                     _placeDistance = null;
                                   });
 
-                                  _calculateDistance().then((isCalculated) {
+                            /*      _calculateDistance().then((isCalculated) {
                                     if (isCalculated) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -311,7 +313,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                         ),
                                       );
                                     }
-                                  });
+                                  });*/
                                   showBottomPanel();
                                 }: null,
                                 child: Padding(
@@ -351,7 +353,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               // add your floating action button
               child: FloatingActionButton(
                 backgroundColor: Colors.white,
-                onPressed: _getCurrentLocation,
+                onPressed: getLocation,
                 child: Icon(Icons.location_on_rounded,
                 color: Colors.black,),
               ),
@@ -362,8 +364,28 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
+  void getLocation() async{
+    loc.Location currentLocation = loc.Location();
+    Set<Marker> _markers={};
+    var location = await currentLocation.getLocation();
+    currentLocation.onLocationChanged.listen((LocationData loc){
+
+      mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+        target: LatLng(loc.latitude ?? 0.0,loc.longitude?? 0.0),
+        zoom: 12.0,
+      )));
+      print(loc.latitude);
+      print(loc.longitude);
+      setState(() {
+        _markers.add(Marker(markerId: MarkerId('Home'),
+            position: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0)
+        ));
+      });
+    });
+  }
+
 // Method for retrieving the current location
-  _getCurrentLocation() async {
+  /*_getCurrentLocation() async {
     LocationPermission permission;
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -393,7 +415,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     }).catchError((e) {
       print(e);
     });
-  }
+  }*/
 
 
 
@@ -417,11 +439,11 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   // Method for calculating the distance between two places
-   Future<bool> _calculateDistance() async {
+  /* Future<bool> _calculateDistance() async {
     try {
       // Retrieving placemarks from addresses
-      List<Location> startPlacemark = await locationFromAddress(_startAddress);
-      List<Location> destinationPlacemark =
+      List<loc.Location> startPlacemark = await locationFromAddress(_startAddress);
+      List<loc.Location> destinationPlacemark =
       await locationFromAddress(_destinationAddress);
 
       // Use the retrieved coordinates of the current position,
@@ -543,7 +565,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       print(e);
     }
     return false;
-  }
+  }*/
 
   // Formula for calculating distance between two coordinates
   // https://stackoverflow.com/a/54138876/11910277
