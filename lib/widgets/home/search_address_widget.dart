@@ -53,6 +53,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
           : snapshot.hasData
           ? ListView.builder(
         itemBuilder: (context, index) => ListTile(
+          leading: const Icon(Icons.location_on),
           title:
           Text((snapshot.data![index] as Suggestion).description),
           onTap: () {

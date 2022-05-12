@@ -57,10 +57,11 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-    //  _getCurrentLocation();
-      getLocation();
-    });
+    getLocation();
+    // setState(() {
+    // //  _getCurrentLocation();
+    //
+    // });
   }
   @override
   void dispose() {
@@ -150,6 +151,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             mapType: MapType.normal,
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
             initialCameraPosition: _initialLocation,
             onMapCreated:(GoogleMapController controller) {
               mapController = controller;
@@ -295,7 +297,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                     _placeDistance = null;
                                   });
 
-                            /*      _calculateDistance().then((isCalculated) {
+                                  _calculateDistance().then((isCalculated) {
                                     if (isCalculated) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -313,7 +315,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                         ),
                                       );
                                     }
-                                  });*/
+                                  });
                                   showBottomPanel();
                                 }: null,
                                 child: Padding(
@@ -368,17 +370,18 @@ class _HomeWidgetState extends State<HomeWidget> {
     loc.Location currentLocation = loc.Location();
     Set<Marker> _markers={};
     var location = await currentLocation.getLocation();
-    currentLocation.onLocationChanged.listen((LocationData loc){
+    await Geolocator.getCurrentPosition()
+        .then((Position position) async {
 
-      mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
-        target: LatLng(loc.latitude ?? 0.0,loc.longitude?? 0.0),
+      await mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+        target: LatLng(position.latitude ,position.longitude),
         zoom: 12.0,
       )));
-      print(loc.latitude);
-      print(loc.longitude);
+      print(position.latitude);
+      print(position.longitude);
       setState(() {
         _markers.add(Marker(markerId: MarkerId('Home'),
-            position: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0)
+            position: LatLng(position.latitude, position.longitude)
         ));
       });
     });
@@ -439,12 +442,11 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   // Method for calculating the distance between two places
-  /* Future<bool> _calculateDistance() async {
+   Future<bool> _calculateDistance() async {
     try {
       // Retrieving placemarks from addresses
-      List<loc.Location> startPlacemark = await locationFromAddress(_startAddress);
-      List<loc.Location> destinationPlacemark =
-      await locationFromAddress(_destinationAddress);
+      var startPlacemark = await locationFromAddress(_startAddress);
+      var destinationPlacemark = await locationFromAddress(_destinationAddress);
 
       // Use the retrieved coordinates of the current position,
       // instead of the address if the start position is user's
@@ -565,7 +567,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       print(e);
     }
     return false;
-  }*/
+  }
 
   // Formula for calculating distance between two coordinates
   // https://stackoverflow.com/a/54138876/11910277
