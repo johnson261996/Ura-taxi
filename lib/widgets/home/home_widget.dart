@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
+import 'package:ura_taxi/widgets/home/choose_ride_widget.dart';
 import 'package:ura_taxi/widgets/home/search_address_widget.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/place.dart';
@@ -26,7 +27,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKey =  GlobalKey();
   final Completer<GoogleMapController> _completer = Completer();
 
-  CameraPosition _initialLocation = CameraPosition(target: LatLng(0.0, 0.0));
+  CameraPosition _initialLocation = CameraPosition(target: LatLng(20.0, 78.0));
   late GoogleMapController mapController;
 
   late Position _currentPosition;
@@ -57,11 +58,11 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
-    getLocation();
-    // setState(() {
-    // //  _getCurrentLocation();
-    //
-    // });
+    setState(() {
+      getLocation();
+    });
+
+
   }
   @override
   void dispose() {
@@ -123,10 +124,15 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     void showBottomPanel() {
-      showModalBottomSheet(context: context, builder: (context){
-        return Container(
+      showModalBottomSheet(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(10.0),
+                topLeft: Radius.circular(10.0)),
+          ),
+          context: context, builder: (context){
 
-        );
+        return ChooseRideWidget();
       });
     }
     double deviceHeight(BuildContext context) => MediaQuery.of(context).size.height;
@@ -368,63 +374,28 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   void getLocation() async{
     loc.Location currentLocation = loc.Location();
-    Set<Marker> _markers={};
     var location = await currentLocation.getLocation();
     await Geolocator.getCurrentPosition()
         .then((Position position) async {
 
-      await mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+      await mapController.animateCamera(CameraUpdate.newCameraPosition( CameraPosition(
         target: LatLng(position.latitude ,position.longitude),
         zoom: 12.0,
       )));
       print(position.latitude);
       print(position.longitude);
-      setState(() {
-        _markers.add(Marker(markerId: MarkerId('Home'),
-            position: LatLng(position.latitude, position.longitude)
-        ));
-      });
-    });
-  }
 
-// Method for retrieving the current location
-  /*_getCurrentLocation() async {
-    LocationPermission permission;
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location Not Available');
-      }
-    } else {
-      throw Exception('Error');
-    }
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) async {
-      setState(() {
-        print("current location");
-        _currentPosition = position;
-        print('CURRENT POS: $_currentPosition');
-        mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
-              zoom: 18.0,
-            ),
-          ),
-        );
-      });
       await _getAddress();
     }).catchError((e) {
       print(e);
     });
-  }*/
-
+  }
 
 
   // Method for retrieving the address
   _getAddress() async {
     try {
+      _currentPosition =  await Geolocator.getCurrentPosition();
       List<Placemark> p = await placemarkFromCoordinates(
           _currentPosition.latitude, _currentPosition.longitude);
 
@@ -433,6 +404,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       setState(() {
         _currentAddress =
         "${place.name}, ${place.locality}, ${place.postalCode}, ${place.country}";
+        print("current addr" + _currentAddress);
         startAddressController.text = _currentAddress;
         _startAddress = _currentAddress;
       });
