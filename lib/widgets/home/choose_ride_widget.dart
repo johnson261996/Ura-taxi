@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/strings.dart';
+import 'package:ura_taxi/widgets/home/driver_info_widget.dart';
 
 class ChooseRideWidget extends StatefulWidget {
   const ChooseRideWidget({Key? key}) : super(key: key);
@@ -105,7 +106,18 @@ class _ChooseRideWidgetState extends State<ChooseRideWidget> {
                 minWidth: 280,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
-                ), onPressed: () {  },
+                ), onPressed: () {
+                Navigator.pop(context);
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10.0),
+                              topLeft: Radius.circular(10.0)),
+                        ),
+                      context: context, builder: (context) {
+                        return DriverInfoWidget();
+                      });
+                   },
               )
             ],
           ),

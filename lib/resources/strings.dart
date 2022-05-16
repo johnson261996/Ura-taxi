@@ -16,6 +16,10 @@ class Strings {
   static const support_title = "Hello, how can we help?";
   static const someone_take_ride_title = "Someone else taking this ride?";
   static const someone_take_ride_contact = "Choose another contact";
+  static const contact_driver = "Contacting Drivers Nearby";
+  static const your_ride_cnfm = "Your ride is confirmed";
+  static const paytm_title = "Pay via Paytm wallet and get cashback...";
+  static const paytm_sub_title = "Pay via Paytm wallet and get cash back up to Rs.400 for your first 2 booking";
   static const someone_take_ride_subtitle = "Choose a contact so that they also get driver number,vehicle details and ride OTP via SMS";
   static const privacy_policy = "Welcome to Urataxi \nUra taxi(the “Company”, “we”, “ura”, or “us”). operates urataxi.com"
   "This Privacy Policy explains how we collect, process, use, share and protect information about you. It also tells you how you"
