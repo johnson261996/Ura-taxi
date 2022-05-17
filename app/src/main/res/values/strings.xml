@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Ura Taxi</string>
-    <string name="facebook_app_id">1037570507196987</string>
-    <string name="fb_login_protocol_scheme">fb1037570507196987</string>
-    <string name="facebook_client_token">662ff701b5a639b70caf6769be43d0f2</string>
-</resources>
