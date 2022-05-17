@@ -45,7 +45,7 @@ void bottomDraggbleSheet(){
       isScrollControlled: true, // set this to true
       builder: (_){
     return DraggableScrollableSheet(
-      initialChildSize: 0.8,
+      initialChildSize: 0.9,
       minChildSize: 0.2,
       maxChildSize: 1,
       expand: false,

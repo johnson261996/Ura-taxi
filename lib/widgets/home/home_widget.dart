@@ -42,6 +42,8 @@ class _HomeWidgetState extends State<HomeWidget> {
   String _startAddress = '';
   String _destinationAddress = '';
   String? _placeDistance;
+  String location = "Location Name:";
+  CameraPosition? cameraPosition;
 
   Set<Marker> markers = {};
 
@@ -50,6 +52,10 @@ class _HomeWidgetState extends State<HomeWidget> {
   List<LatLng> polylineCoordinates = [];
 
   bool done = false;
+  bool left_arrow_btn = false;
+  bool menu_btn = true;
+  bool pin = true;
+
   late String error;
   final  sessionToken = Uuid().v4();
   //late PlaceApiProvider apiClient;
@@ -162,9 +168,44 @@ class _HomeWidgetState extends State<HomeWidget> {
             onMapCreated:(GoogleMapController controller) {
               mapController = controller;
             },
+            onCameraMove: (CameraPosition cameraPositiona) {
+              cameraPosition = cameraPositiona; //when map is dragging
+            },
+            onCameraIdle: () async { //when map drag stops
+              List<Placemark> placemarks = await placemarkFromCoordinates(cameraPosition!.target.latitude, cameraPosition!.target.longitude);
+              setState(() { //get place name from lat and lang
+                location = "${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.postalCode} ,${placemarks.first.administrativeArea.toString()}, ${placemarks.first.country}" ;
+                startAddressController.text = location;
+                _startAddress =   startAddressController.text ;
+              });
+            },
             markers: Set<Marker>.from(markers),
             polylines: Set<Polyline>.of(polylines.values),
           ),
+          if(pin)
+          Center( //picker image on google map
+            child: Image.asset("assets/images/pin.png", width: 30,height: 40,),
+          ),
+          if(left_arrow_btn)
+          Positioned(
+            left: 0,
+            top: MediaQuery.of(context).size.height * 0.07,
+            right: MediaQuery.of(context).size.width * 0.85,
+            child: IconButton(
+              icon:  Icon(Icons.arrow_back),
+              color: Colors.black,
+              onPressed: () {
+                setState(() {
+                  menu_btn = true;
+                  left_arrow_btn = false;
+                  markers.clear();
+                  polylines.clear();
+                  polylineCoordinates.clear();
+                  getLocation();
+                });
+              },
+            ),),
+          if(menu_btn)
           Positioned(
             left: 0,
             top: 0,
@@ -295,6 +336,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   startAddressFocusNode.unfocus();
                                   desrinationAddressFocusNode.unfocus();
                                   setState(() {
+                                    left_arrow_btn = true;
+                                    menu_btn = false;
+                                    pin = false;
                                     if (markers.isNotEmpty) markers.clear();
                                     if (polylines.isNotEmpty)
                                       polylines.clear();
