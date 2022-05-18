@@ -12,10 +12,43 @@ class DriverInfoWidget extends StatefulWidget {
 
 class _DriverInfoWidgetState extends State<DriverInfoWidget> with SingleTickerProviderStateMixin {
 
-
   late AnimationController controller;
   late Animation<double> animation;
   late double value;
+
+  void cancelDialog(BuildContext context) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure want to cancel ride'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                    Navigator.pop(context);
+                  });
+                },
+                child: const Text('Yes'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('No'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              )
+            ],
+          );
+        });
+  }
 
   @override
   void initState() {
@@ -45,14 +78,11 @@ void bottomDraggbleSheet(){
       isScrollControlled: true, // set this to true
       builder: (_){
     return DraggableScrollableSheet(
-      initialChildSize: 0.9,
-      minChildSize: 0.2,
-      maxChildSize: 1,
+      initialChildSize: 0.5,
       expand: false,
       builder: (BuildContext context, ScrollController scrollController) {
-        return Column(
-         crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+        return ListView(
+          controller: scrollController,
           children: [
             const Divider(
               color: Colors.grey,
@@ -62,7 +92,7 @@ void bottomDraggbleSheet(){
               endIndent: 150,
             ),
 
-            Text(Strings.your_ride_cnfm,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+            Center(child: Text(Strings.your_ride_cnfm,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
             SizedBox(height: 5,),
 
             const Divider(
@@ -102,53 +132,53 @@ void bottomDraggbleSheet(){
                   ),
                 ),
                 Container(
-                 width:  MediaQuery.of(context).size.width / 2,
-                 height: 100,
-                 child: Stack(
-                     alignment: Alignment.center,
-                     children: <Widget>[
-                       Positioned(
-                         top: 0,
-                         right: 100,
-                         child: CircleAvatar(
-                           radius: 20.0,
-                           child: ClipRRect(
-                             child: Image.asset('assets/images/driver.png'),
-                             borderRadius: BorderRadius.circular(20.0),
-                           ),
-                         ),
-                       ),
-                       Positioned(
-                           top: 0,
-                           left: 80,
-                           child: Image(image: AssetImage('assets/images/car.png',),width: 50,height: 50,)),
-                       Positioned(
-                         right: 50,
-                         child: Container(
-                             width: 100,
-                             padding: EdgeInsets.all(5),
-                             decoration: BoxDecoration(
-                                 color: Colors.green,
-                                 borderRadius: BorderRadius.all(Radius.circular(20))
-                             ),
-                             child:Row(
-                               mainAxisAlignment: MainAxisAlignment.start,
-                               children: [
-                                 Icon(
-                                   Icons.shield,
-                                   color: Colors.white,
-                                   size: 10,
-                                 ),
-                                 SizedBox(width: 5,),
-                                 Text("Vaccinated".toUpperCase(),style: TextStyle(fontSize: 10,color: Colors.white)),
-                               ],
-                             )
-                         ),
-                       )
+                  width:  MediaQuery.of(context).size.width / 2,
+                  height: 100,
+                  child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        Positioned(
+                          top: 0,
+                          right: 100,
+                          child: CircleAvatar(
+                            radius: 20.0,
+                            child: ClipRRect(
+                              child: Image.asset('assets/images/driver.png'),
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                            top: 0,
+                            left: 80,
+                            child: Image(image: AssetImage('assets/images/car.png',),width: 50,height: 50,)),
+                        Positioned(
+                          right: 50,
+                          child: Container(
+                              width: 100,
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.all(Radius.circular(20))
+                              ),
+                              child:Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.shield,
+                                    color: Colors.white,
+                                    size: 10,
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text("Vaccinated".toUpperCase(),style: TextStyle(fontSize: 10,color: Colors.white)),
+                                ],
+                              )
+                          ),
+                        )
 
-                     ]
-                   ),
-                 ),
+                      ]
+                  ),
+                ),
               ],
             ),
             Padding(
@@ -175,7 +205,8 @@ void bottomDraggbleSheet(){
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                    },
                     icon: Icon(Icons.help,color: Colors.black,size: 15,),
                     label: Text("Support",style: TextStyle(color: Colors.black),),
                     style: ElevatedButton.styleFrom(
@@ -195,15 +226,15 @@ void bottomDraggbleSheet(){
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                     Column(
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       crossAxisAlignment: CrossAxisAlignment.center,
-                       children: [
-                         Icon(Icons.circle,color: Colors.green,size: 10,),
-                         Container(color: Colors.grey, height: 30, width: 2,),
-                         Icon(Icons.circle,color: Colors.red,size: 10,),
-                       ],
-                     ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.circle,color: Colors.green,size: 10,),
+                        Container(color: Colors.grey, height: 30, width: 2,),
+                        Icon(Icons.circle,color: Colors.red,size: 10,),
+                      ],
+                    ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -246,31 +277,31 @@ void bottomDraggbleSheet(){
                   child: Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:[
-                      Text("Total Fare \u{20B9}375",style:TextStyle(fontSize: 25,fontWeight: FontWeight.bold) ,),
-                        const Divider(
-                          color: Colors.grey,
-                          height: 20,
-                          thickness: 1,
-                          indent: 0,
-                          endIndent: 0,
-                        ),
-                        ListTile(
-                            leading: const Icon(Icons.money,color: Colors.green,size: 30,),
-                            title: const Text("Cash",style:TextStyle(fontWeight: FontWeight.bold) ),
-                            subtitle: const Text('Pay when the ride ends',style:TextStyle(color: Colors.grey)),
-                            trailing: const Text('Change',style:TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.blue) ),
-                            onTap: () => print("ListTile")
-                        ),
-                        ListTile(
-                            leading: const Image(image: AssetImage('assets/images/paytm_icon.png',),width: 30,height: 30,),
-                            title: Expanded(child: const Text(Strings.paytm_title,style:TextStyle(color: Colors.green) )),
-                            subtitle: Expanded(child: const Text(Strings.paytm_sub_title,style:TextStyle(color: Colors.grey))),
-                            trailing: const Icon(Icons.arrow_forward_ios,color: Colors.grey,size: 10,),
-                            onTap: () => print("ListTile")
-                        ),
-                      ]
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:[
+                          Text("Total Fare \u{20B9}375",style:TextStyle(fontSize: 25,fontWeight: FontWeight.bold) ,),
+                          const Divider(
+                            color: Colors.grey,
+                            height: 20,
+                            thickness: 1,
+                            indent: 0,
+                            endIndent: 0,
+                          ),
+                          ListTile(
+                              leading: const Icon(Icons.money,color: Colors.green,size: 30,),
+                              title: const Text("Cash",style:TextStyle(fontWeight: FontWeight.bold) ),
+                              subtitle: const Text('Pay when the ride ends',style:TextStyle(color: Colors.grey)),
+                              trailing: const Text('Change',style:TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.blue) ),
+                              onTap: () => print("ListTile")
+                          ),
+                          ListTile(
+                              leading: const Image(image: AssetImage('assets/images/paytm_icon.png',),width: 30,height: 30,),
+                              title: Expanded(child: const Text(Strings.paytm_title,style:TextStyle(color: Colors.green) )),
+                              subtitle: Expanded(child: const Text(Strings.paytm_sub_title,style:TextStyle(color: Colors.grey))),
+                              trailing: const Icon(Icons.arrow_forward_ios,color: Colors.grey,size: 10,),
+                              onTap: () => print("ListTile")
+                          ),
+                        ]
                     ),
                   ),
                 ),
@@ -280,9 +311,8 @@ void bottomDraggbleSheet(){
         );
       },
     );
-      });
+  });
 }
-
 
 
   @override
@@ -328,7 +358,7 @@ void bottomDraggbleSheet(){
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ), onPressed: () {
-            //bottomDraggbleSheet();
+            cancelDialog(context);
           },
           )
         ]

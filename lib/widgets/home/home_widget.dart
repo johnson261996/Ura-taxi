@@ -174,9 +174,11 @@ class _HomeWidgetState extends State<HomeWidget> {
             onCameraIdle: () async { //when map drag stops
               List<Placemark> placemarks = await placemarkFromCoordinates(cameraPosition!.target.latitude, cameraPosition!.target.longitude);
               setState(() { //get place name from lat and lang
-                location = "${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.postalCode} ,${placemarks.first.administrativeArea.toString()}, ${placemarks.first.country}" ;
-                startAddressController.text = location;
-                _startAddress =   startAddressController.text ;
+                if(pin==true){
+                  location = "${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.postalCode} ,${placemarks.first.administrativeArea.toString()}, ${placemarks.first.country}" ;
+                  startAddressController.text = location;
+                  _startAddress =   startAddressController.text ;
+                }
               });
             },
             markers: Set<Marker>.from(markers),
@@ -198,9 +200,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                 setState(() {
                   menu_btn = true;
                   left_arrow_btn = false;
+                  pin = true;
                   markers.clear();
                   polylines.clear();
                   polylineCoordinates.clear();
+                  startAddressController.clear();
+                  destinationAddressController.clear();
                   getLocation();
                 });
               },
@@ -228,172 +233,173 @@ class _HomeWidgetState extends State<HomeWidget> {
                     ),
                   ),
                 ),
-                SafeArea(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding:  EdgeInsets.only(top:deviceHeight(context) *0.550 ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white70,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20.0),
-                          ),
-                        ),
-                        width: width * 0.9,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              SizedBox(height: 10),
-                              InkWell(
-                                onTap: ()async{
-                                  final Suggestion? result = await showSearch(
-                                    context: context,
-                                    delegate: AddressSearch(sessionToken),
 
-                                  );
-                                  // This will change the text displayed in the TextField
-                                  if (result != null) {
-                                    final placeDetails = await PlaceApiProvider(sessionToken)
-                                        .getPlaceDetailFromId(result.placeId);
-                                    setState(() {
-                                      startAddressController.text = result.description;
-                                      _startAddress =   startAddressController.text ;
-                                    });
-                                  }
-                                },
-                                child: AbsorbPointer(
-                                  child: _textField(
-                                     // label: 'Start',
-                                      hint: 'pick up',
-                                      readonly: false,
-                                      prefixIcon: Icon(Icons.circle,color: Colors.green,size: 10,),
-                                      controller: startAddressController,
-                                      focusNode: startAddressFocusNode,
-                                      width: width,
-                                      locationCallback: (String value) {
-                                        setState(() {
-                                          _startAddress = value;
-                                          _startAddress =   startAddressController.text ;
-                                        });
-                                      }),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              InkWell(
-                                onTap: ()async{
-                                  final Suggestion? result = await showSearch(
-                                    context: context,
-                                    delegate: AddressSearch(sessionToken),
-                                  );
-                                  // This will change the text displayed in the TextField
-                                  if (result != null) {
-                                    final placeDetails = await PlaceApiProvider(sessionToken)
-                                        .getPlaceDetailFromId(result.placeId);
-                                    setState(() {
-                                      destinationAddressController.text = result.description;
-                                      _destinationAddress= destinationAddressController.text;
-                                    });
-                                  }
-                                },
-                                child: AbsorbPointer(
-                                  child: _textField(
-                                     // label: 'Destination',
-                                      hint: 'where to go?',
-                                      readonly: true,
-                                      prefixIcon: Icon(Icons.circle,color: Colors.red,size: 10,),
-                                      controller: destinationAddressController,
-                                      focusNode: desrinationAddressFocusNode,
-                                      width: width,
-                                      locationCallback: (String value)  {
-                                        setState(() {
-
-                                          _destinationAddress = value;
-                                          _destinationAddress= destinationAddressController.text;
-                                        });
-                                      },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Visibility(
-                                visible: _placeDistance == null ? false : true,
-                                child: Text(
-                                  'DISTANCE: $_placeDistance km',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              ElevatedButton(
-                                onPressed: (_startAddress != '' &&
-                                    _destinationAddress != '')
-                                    ? () async {
-                                  startAddressFocusNode.unfocus();
-                                  desrinationAddressFocusNode.unfocus();
-                                  setState(() {
-                                    left_arrow_btn = true;
-                                    menu_btn = false;
-                                    pin = false;
-                                    if (markers.isNotEmpty) markers.clear();
-                                    if (polylines.isNotEmpty)
-                                      polylines.clear();
-                                    if (polylineCoordinates.isNotEmpty)
-                                      polylineCoordinates.clear();
-                                    _placeDistance = null;
-                                  });
-
-                                  _calculateDistance().then((isCalculated) {
-                                    if (isCalculated) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Distance Calculated Sucessfully'),
-                                        ),
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Error Calculating Distance'),
-                                        ),
-                                      );
-                                    }
-                                  });
-                                  showBottomPanel();
-                                }: null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Go'.toUpperCase(),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20.0,
-                                    ),
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.purpleAccent,
-                                  minimumSize: Size(width*0.8, 48),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+              ],
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding:  EdgeInsets.only(top:deviceHeight(context) *0.550 ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white70,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20.0),
                     ),
                   ),
-                )
-              ],
+                  width: width * 0.9,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(height: 10),
+                        InkWell(
+                          onTap: ()async{
+                            final Suggestion? result = await showSearch(
+                              context: context,
+                              delegate: AddressSearch(sessionToken),
+
+                            );
+                            // This will change the text displayed in the TextField
+                            if (result != null) {
+                              final placeDetails = await PlaceApiProvider(sessionToken)
+                                  .getPlaceDetailFromId(result.placeId);
+                              setState(() {
+                                startAddressController.text = result.description;
+                                _startAddress =   startAddressController.text ;
+                              });
+                            }
+                          },
+                          child: AbsorbPointer(
+                            child: _textField(
+                              // label: 'Start',
+                                hint: 'pick up',
+                                readonly: false,
+                                prefixIcon: Icon(Icons.circle,color: Colors.green,size: 10,),
+                                controller: startAddressController,
+                                focusNode: startAddressFocusNode,
+                                width: width,
+                                locationCallback: (String value) {
+                                  setState(() {
+                                    _startAddress = value;
+                                    _startAddress =   startAddressController.text ;
+                                  });
+                                }),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        InkWell(
+                          onTap: ()async{
+                            final Suggestion? result = await showSearch(
+                              context: context,
+                              delegate: AddressSearch(sessionToken),
+                            );
+                            // This will change the text displayed in the TextField
+                            if (result != null) {
+                              final placeDetails = await PlaceApiProvider(sessionToken)
+                                  .getPlaceDetailFromId(result.placeId);
+                              setState(() {
+                                destinationAddressController.text = result.description;
+                                _destinationAddress= destinationAddressController.text;
+                              });
+                            }
+                          },
+                          child: AbsorbPointer(
+                            child: _textField(
+                              // label: 'Destination',
+                              hint: 'where to go?',
+                              readonly: true,
+                              prefixIcon: Icon(Icons.circle,color: Colors.red,size: 10,),
+                              controller: destinationAddressController,
+                              focusNode: desrinationAddressFocusNode,
+                              width: width,
+                              locationCallback: (String value)  {
+                                setState(() {
+
+                                  _destinationAddress = value;
+                                  _destinationAddress= destinationAddressController.text;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Visibility(
+                          visible: _placeDistance == null ? false : true,
+                          child: Text(
+                            'DISTANCE: $_placeDistance km',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        ElevatedButton(
+                          onPressed: (_startAddress != '' &&
+                              _destinationAddress != '')
+                              ? () async {
+                            startAddressFocusNode.unfocus();
+                            desrinationAddressFocusNode.unfocus();
+                            setState(() {
+                              left_arrow_btn = true;
+                              menu_btn = false;
+                              pin = false;
+                              if (markers.isNotEmpty) markers.clear();
+                              if (polylines.isNotEmpty)
+                                polylines.clear();
+                              if (polylineCoordinates.isNotEmpty)
+                                polylineCoordinates.clear();
+                              _placeDistance = null;
+                            });
+
+                            _calculateDistance().then((isCalculated) {
+                              if (isCalculated) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Distance Calculated Sucessfully'),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Error Calculating Distance'),
+                                  ),
+                                );
+                              }
+                            });
+                            showBottomPanel();
+                          }: null,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Go'.toUpperCase(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.purpleAccent,
+                            minimumSize: Size(width*0.8, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
           Positioned(
@@ -490,7 +496,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           title: 'Start $startCoordinatesString',
           snippet: _startAddress,
         ),
-        icon: BitmapDescriptor.defaultMarker,
+        icon: await BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(40, 40)), 'assets/images/map_pin_green.png')
+
       );
 
       // Destination Location Marker
@@ -501,7 +508,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           title: 'Destination $destinationCoordinatesString',
           snippet: _destinationAddress,
         ),
-        icon: BitmapDescriptor.defaultMarker,
+        icon:await BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(40, 40)), 'assets/images/map_pin_red.png')
       );
 
       // Adding the markers to the list

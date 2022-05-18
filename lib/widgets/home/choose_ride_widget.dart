@@ -13,6 +13,19 @@ class ChooseRideWidget extends StatefulWidget {
 
 class _ChooseRideWidgetState extends State<ChooseRideWidget> {
 
+  String vehicle = "Any";
+
+
+  void bb(String v){
+    print('Clicked Clicked');
+    if(mounted){
+      setState(() {
+        vehicle = v;
+      });
+    }
+
+  }
+
   void showBottomVehicleSheet(){
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
@@ -38,7 +51,10 @@ class _ChooseRideWidgetState extends State<ChooseRideWidget> {
                 ),
                 title: Text("Book any",style: TextStyle(fontWeight: FontWeight.bold),),
                 subtitle: Text("Mini,Prime Sedan",style: TextStyle(fontSize: 10,color: Colors.grey)),
-                onTap: () {},
+                onTap: () {
+                    vehicle = "any";
+                    bb(vehicle);
+                },
                 trailing: Text("\u{20B9}351-\u{20B9}400"),
                 dense:true,
                 visualDensity: VisualDensity(vertical: 3),
@@ -53,7 +69,11 @@ class _ChooseRideWidgetState extends State<ChooseRideWidget> {
                 ),
                 title: Text("Auto",style: TextStyle(fontWeight: FontWeight.bold),),
                 subtitle: Text("Get autos at your door step",style: TextStyle(fontSize: 10,color: Colors.grey)),
-                onTap: () {},
+                onTap: () {
+                  vehicle = "Auto";
+                  bb(vehicle);
+                  print("ListTile" + vehicle);
+                },
                 trailing: Text("\u{20B9}151"),
                 dense:true,
                 visualDensity: VisualDensity(vertical: 3),
@@ -68,7 +88,10 @@ class _ChooseRideWidgetState extends State<ChooseRideWidget> {
                 ),
                 title: Text("suv",style: TextStyle(fontWeight: FontWeight.bold),),
                 subtitle: Text("comfy economical cars",style: TextStyle(fontSize: 10,color: Colors.grey)),
-                onTap: () {},
+                onTap: () {
+                    vehicle = "suv";
+                    print("ListTile" + vehicle);
+                },
                 trailing: Text("\u{20B9}151"),
                 dense:true,
                 visualDensity: VisualDensity(vertical: 3),
@@ -99,7 +122,7 @@ class _ChooseRideWidgetState extends State<ChooseRideWidget> {
               ),
               SizedBox(height: 5,),
               MaterialButton(
-                child: Text('Book Any'),
+                child: Text('Book ${vehicle}'),
                 height: 50,
                 color: Colors.purple,
                 textColor: Colors.white,
