@@ -48,6 +48,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   CameraPosition? cameraPosition;
   BitmapDescriptor cabIcon = BitmapDescriptor.defaultMarker;
   Set<Marker> markers = {};
+  List<Marker> nearByCabMarkers = <Marker>[];
 
   late PolylinePoints polylinePoints;
   Map<PolylineId, Polyline> polylines = {};
@@ -69,9 +70,10 @@ class _HomeWidgetState extends State<HomeWidget> {
      rootBundle.loadString('assets/map_style').then((string) {
       _mapStyle = string;
     });
-     getCabIcon();
+
     setState(() {
       getLocation();
+      getCabIcon();
     });
   }
 
@@ -203,6 +205,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               });
             },
             markers: Set<Marker>.from(markers),
+           // nearByCabMarkers.toSet(),
             polylines: Set<Polyline>.of(polylines.values),
           ),
           if(pin)

@@ -111,12 +111,12 @@ class Simulator{
               // for (DirectionsRoute route in routesList) {
               OverviewPolyline? path = routesList.overviewPolyline;
               PolyLineLib.PolylinePoints polylinePoints = PolyLineLib.PolylinePoints();
-              List<PolyLineLib.PointLatLng> result = polylinePoints.decodePolyline(path.points!);
+              List<PolyLineLib.PointLatLng> result = polylinePoints.decodePolyline(path?.points ?? "");
               var latlngList=result.map((pointLatLng) => LatLng(pointLatLng.latitude,pointLatLng.longitude));
               pickUpPath.addAll(latlngList);
               //}
 
-              JsonMessage jsonMessage=JsonMessage(Constants.pickUpPath,pickUpPath);
+              JsonMessage jsonMessage=JsonMessage(tag: '', data: []);
 
               webSocketListener.onMessage(jsonEncode(jsonMessage));
 
@@ -192,11 +192,11 @@ class Simulator{
 
               OverviewPolyline? path = routesList.overviewPolyline;
               PolyLineLib.PolylinePoints polylinePoints = PolyLineLib.PolylinePoints();
-              List<PolyLineLib.PointLatLng> result = polylinePoints.decodePolyline(path.points);
+              List<PolyLineLib.PointLatLng> result = polylinePoints.decodePolyline(path?.points ?? "");
               var latlngList=result.map((pointLatLng) => LatLng(pointLatLng.latitude,pointLatLng.longitude));
               pickUpPath.addAll(latlngList);
 
-              JsonMessage jsonMessage=JsonMessage(Constants.DestinationPath,pickUpPath, data: [], tag: '');
+              JsonMessage jsonMessage=JsonMessage( data: [], tag: '');
 
               webSocketListener.onMessage(jsonEncode(jsonMessage));
 
