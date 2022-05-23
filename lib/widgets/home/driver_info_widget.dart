@@ -54,7 +54,7 @@ class _DriverInfoWidgetState extends State<DriverInfoWidget> with SingleTickerPr
   void initState() {
     super.initState();
     controller = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+        duration: const Duration(milliseconds: 10000), vsync: this);
     animation = Tween(begin: 0.0, end: 1.0).animate(controller)
       ..addListener(() {
         setState(() {

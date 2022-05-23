@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
+import 'package:ura_taxi/utils/Icon_Utils.dart';
 import 'package:ura_taxi/widgets/home/choose_ride_widget.dart';
 import 'package:ura_taxi/widgets/home/search_address_widget.dart';
 import 'package:uuid/uuid.dart';
@@ -44,13 +46,13 @@ class _HomeWidgetState extends State<HomeWidget> {
   String? _placeDistance;
   String location = "Location Name:";
   CameraPosition? cameraPosition;
-
+  BitmapDescriptor cabIcon = BitmapDescriptor.defaultMarker;
   Set<Marker> markers = {};
 
   late PolylinePoints polylinePoints;
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
-
+  late String _mapStyle;
   bool done = false;
   bool left_arrow_btn = false;
   bool menu_btn = true;
@@ -64,18 +66,36 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
+     rootBundle.loadString('assets/map_style').then((string) {
+      _mapStyle = string;
+    });
+     getCabIcon();
     setState(() {
       getLocation();
     });
-
-
   }
+
   @override
   void dispose() {
     startAddressController.dispose();
     destinationAddressController.dispose();
     super.dispose();
 
+  }
+
+  void getCabIcon() async {
+    cabIcon = await IconUtils.createMarkerImageFromAsset();
+  }
+
+  showNearbyCabs(List<LatLng> latLngList) {
+    int count = 0;
+    for (LatLng item in latLngList) {
+      nearByCabMarkers.add(Marker(
+          markerId: MarkerId(count.toString()), icon: cabIcon, position: item));
+      count++;
+    }
+
+    setState(() {});
   }
 
   Widget _textField({
@@ -167,6 +187,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             initialCameraPosition: _initialLocation,
             onMapCreated:(GoogleMapController controller) {
               mapController = controller;
+              controller.setMapStyle(_mapStyle);
             },
             onCameraMove: (CameraPosition cameraPositiona) {
               cameraPosition = cameraPositiona; //when map is dragging

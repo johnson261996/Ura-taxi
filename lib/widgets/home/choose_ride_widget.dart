@@ -14,6 +14,7 @@ class ChooseRideWidget extends StatefulWidget {
 class _ChooseRideWidgetState extends State<ChooseRideWidget> {
 
   String vehicle = "Any";
+  bool isClciked = false;
 
 
   void bb(String v){
@@ -23,7 +24,6 @@ class _ChooseRideWidgetState extends State<ChooseRideWidget> {
         vehicle = v;
       });
     }
-
   }
 
   void showBottomVehicleSheet(){
