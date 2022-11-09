@@ -4,7 +4,7 @@ A new ride sharing app,hire taxi in one click download ura taxi app.
 
 ## Screenshots
 
-Splash page  |Login page  |   Register Page   |Home Page   |  choose contact bottom sheet |    choose vehicle bottom sheet   |
+Splash page  |Login page  |   Register Page   |Home Page   |  choose contact<br/> bottom sheet |    choose vehicle<br/>  bottom sheet   |
 :-------------|:-------------|:-------------|:----------------:|:---------------:|:-------------|
  <div float="left">
     <img src="https://imgur.com/uCQIHCR.png" alt="Splash Screen" width="110"/>
@@ -14,7 +14,6 @@ Splash page  |Login page  |   Register Page   |Home Page   |  choose contact bot
      <img src="https://imgur.com/I2AkVNf.png" alt="choose contact bottom sheet" width="110"/>
     <img src="https://imgur.com/R9GZLyS.png" alt="choose vehicle bottom sheet " width="110"/>
 </div>
-<br/>
 ride confirm bottom sheet  | Navigation drawer |  Profile Page | Notification Page | My trips Page  |  Payment Page  |  
 :-----------:|:-------------------:|:--------------:|:-------------:|:--------------:|:-----------------:|
  <div float="left">
