@@ -14,7 +14,8 @@ Splash page  |Login page  |   Register Page   |Home Page   |  choose contact<br/
      <img src="https://imgur.com/I2AkVNf.png" alt="choose contact bottom sheet" width="110"/>
     <img src="https://imgur.com/R9GZLyS.png" alt="choose vehicle bottom sheet " width="110"/>
 </div>
-ride confirm bottom sheet  | Navigation drawer |  Profile Page | Notification Page | My trips Page  |  Payment Page  |  
+
+ride confirm bottom sheet  | Navigation drawer |  Profile Page | Notification Page | My trips Page  |  Payment Page  |  <br/>
 :-----------:|:-------------------:|:--------------:|:-------------:|:--------------:|:-----------------:|
  <div float="left">
     <img src="https://imgur.com/vtm2g5Q.png" alt="ride confirm bottom sheet" width="110"/>
@@ -24,7 +25,7 @@ ride confirm bottom sheet  | Navigation drawer |  Profile Page | Notification Pa
     <img src="https://imgur.com/qRX0I0H.png" alt="My trips screen" width="110"/>
     <img src="https://imgur.com/EhDQMbg.png" alt="Payment screen" width="110"/>
 </div>
-promo code Page |  Invite Page |  about Page |  support Page | privacy policy Page |
+promo code Page |  Invite Page |  about Page |  support Page | privacy policy Page | <br/>
 :------------:|:-----------------:|:-------------:|:-------------:|:-------------:|
  <div float="left">
     <img src="https://imgur.com/OfRWNL2.png" alt="promo code screen" width="110"/>
