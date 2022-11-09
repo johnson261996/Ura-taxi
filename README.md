@@ -14,6 +14,7 @@ Splash page  |Login page  |   Register Page   |Home Page   |  choose contact bot
      <img src="https://imgur.com/I2AkVNf.png" alt="choose contact bottom sheet" width="110"/>
     <img src="https://imgur.com/R9GZLyS.png" alt="choose vehicle bottom sheet " width="110"/>
 </div>
+<br/>
 ride confirm bottom sheet  | Navigation drawer |  Profile Page | Notification Page | My trips Page  |  Payment Page  |  
 :-----------:|:-------------------:|:--------------:|:-------------:|:--------------:|:-----------------:|
  <div float="left">
