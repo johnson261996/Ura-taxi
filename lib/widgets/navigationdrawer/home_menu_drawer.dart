@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/images.dart';
 
@@ -8,6 +10,7 @@ import 'package:ura_taxi/screens/privacy/privacy.dart';
 import 'package:ura_taxi/screens/profile/profile.dart';
 import 'package:ura_taxi/screens/support/support.dart';
 import 'package:ura_taxi/screens/trips/mytrips.dart';
+import 'package:ura_taxi/utils/Appclient.dart';
 import '../../screens/about/about.dart';
 import '../../screens/promocode/promocode.dart';
 
@@ -93,7 +96,7 @@ class _HomeMenuDrawerState extends State<HomeMenuDrawer> {
   );
 }
 
-void openDrawerItems(BuildContext context,String DrawerItemName) {
+Future<void> openDrawerItems(BuildContext context,String DrawerItemName) async {
 
   if("profile".toLowerCase()==DrawerItemName.toLowerCase()){
     Future.delayed(Duration.zero, () {
@@ -142,8 +145,12 @@ void openDrawerItems(BuildContext context,String DrawerItemName) {
           builder: (BuildContext context) => PrivacyPolicyScreen(
           )));
     });
+  }else{
+   await AppClient().signOut(context);
   }
 }
+
+
 
 
 

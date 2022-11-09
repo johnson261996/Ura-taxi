@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ura_taxi/resources/images.dart';
 import 'package:ura_taxi/screens/intro/intro.dart';
+import 'package:ura_taxi/widgets/auth/wrapper.dart';
 import 'package:ura_taxi/widgets/intro/intro_widget.dart';
 
 class SplashWidget extends StatefulWidget {
@@ -21,7 +22,7 @@ class _SplashWidgetState extends State<SplashWidget> {
     Navigator.pushReplacement<void, void>(
       context,
       MaterialPageRoute<void>(
-        builder: (BuildContext context) => const IntroScreen(),
+        builder: (BuildContext context) =>  Wrapper(),
       ),
     );
   }

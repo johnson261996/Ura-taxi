@@ -15,36 +15,28 @@ class _DriverInfoWidgetState extends State<DriverInfoWidget> with SingleTickerPr
   late AnimationController controller;
   late Animation<double> animation;
   late double value;
+  late BuildContext search_driver_ctx;
 
   void cancelDialog(BuildContext context) {
     showCupertinoDialog(
         context: context,
         builder: (BuildContext ctx) {
-          return CupertinoAlertDialog(
+          return AlertDialog(
             title: const Text('Please Confirm'),
             content: const Text('Are you sure want to cancel ride'),
             actions: [
               // The "Yes" button
-              CupertinoDialogAction(
-                onPressed: () {
-                  setState(() {
-                    Navigator.of(context).pop();
-                    Navigator.pop(context);
-                  });
-                },
-                child: const Text('Yes'),
-                isDefaultAction: true,
-                isDestructiveAction: true,
-              ),
-              // The "No" button
-              CupertinoDialogAction(
-                onPressed: () {
+              ElevatedButton(onPressed: (){
+                setState(() {
                   Navigator.of(context).pop();
-                },
-                child: const Text('No'),
-                isDefaultAction: false,
-                isDestructiveAction: false,
-              )
+                  Navigator.pop(context);
+                });
+              }, child: Text("Yes")),
+              // The "No" button
+              ElevatedButton(onPressed: (){
+                Navigator.of(context).pop();
+              }, child: Text("No")),
+
             ],
           );
         });
@@ -59,9 +51,10 @@ class _DriverInfoWidgetState extends State<DriverInfoWidget> with SingleTickerPr
       ..addListener(() {
         setState(() {
           // the state that has changed here is the animation object’s value
-          if(animation.value==1.0)
+          if(animation.value==1.0) {
+            Navigator.pop(search_driver_ctx);
             bottomDraggbleSheet();
-
+          }
         });
       });
     controller.forward();
@@ -79,10 +72,13 @@ void bottomDraggbleSheet(){
       builder: (_){
     return DraggableScrollableSheet(
       initialChildSize: 0.5,
+      minChildSize: 0.2,
+      maxChildSize: 0.8,
       expand: false,
       builder: (BuildContext context, ScrollController scrollController) {
         return ListView(
           controller: scrollController,
+          shrinkWrap: true,
           children: [
             const Divider(
               color: Colors.grey,
@@ -151,7 +147,8 @@ void bottomDraggbleSheet(){
                         Positioned(
                             top: 0,
                             left: 80,
-                            child: Image(image: AssetImage('assets/images/car.png',),width: 50,height: 50,)),
+                            child: Image(image: AssetImage('assets/images/car.png',),width: 50,height: 50,)
+                        ),
                         Positioned(
                           right: 50,
                           child: Container(
@@ -296,8 +293,8 @@ void bottomDraggbleSheet(){
                           ),
                           ListTile(
                               leading: const Image(image: AssetImage('assets/images/paytm_icon.png',),width: 30,height: 30,),
-                              title: Expanded(child: const Text(Strings.paytm_title,style:TextStyle(color: Colors.green) )),
-                              subtitle: Expanded(child: const Text(Strings.paytm_sub_title,style:TextStyle(color: Colors.grey))),
+                              title: const Text(Strings.paytm_title,style:TextStyle(color: Colors.green) ),
+                              subtitle: const Text(Strings.paytm_sub_title,style:TextStyle(color: Colors.grey)),
                               trailing: const Icon(Icons.arrow_forward_ios,color: Colors.grey,size: 10,),
                               onTap: () => print("ListTile")
                           ),
@@ -324,6 +321,7 @@ void bottomDraggbleSheet(){
 
   @override
   Widget build(BuildContext context) {
+    search_driver_ctx= context;
     return  Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
