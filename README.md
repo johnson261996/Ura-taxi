@@ -27,7 +27,7 @@ Splash page  |Login page  |   Register Page   |Home Page   |  choose contact<br/
 </div>
 
 |promo code Page |  Invite Page |  about Page |  support Page | privacy policy Page | 
-|:------------:|:-----------------:|:-------------:|:-------------:|:-------------:|
+:------------:|:-----------------:|:-------------:|:-------------:|:-------------:|
  <div float="left">
     <img src="https://imgur.com/OfRWNL2.png" alt="promo code screen" width="110"/>
     <img src="https://imgur.com/AmDkACd.png" alt="Invite screen" width="110"/>
