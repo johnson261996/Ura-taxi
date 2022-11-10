@@ -5,8 +5,8 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   AddressSearch(this.sessionToken) {
     apiClient = PlaceApiProvider(sessionToken);
   }
-
   final sessionToken;
+  static late String address;
   late PlaceApiProvider apiClient;
 
   @override
@@ -35,12 +35,20 @@ class AddressSearch extends SearchDelegate<Suggestion> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Text(query);
+    return Container(
+      child: ListTile(
+          leading: const Icon(Icons.search),
+        onTap: (){
+          address = query;
+          Navigator.pop(context);
+        },
+          title: Text(query)),
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder<List<Object>>(
+    return FutureBuilder<List<Object>?>(
       future: query == ""
           ? null
           : apiClient.fetchSuggestions(
@@ -50,8 +58,8 @@ class AddressSearch extends SearchDelegate<Suggestion> {
         padding: EdgeInsets.all(16.0),
         child: Text('Enter your address'),
       )
-          : snapshot.hasData
-          ? ListView.builder(
+          :snapshot.data != null
+          ?  ListView.builder(
         itemBuilder: (context, index) => ListTile(
           leading: const Icon(Icons.location_on),
           title:
@@ -62,7 +70,16 @@ class AddressSearch extends SearchDelegate<Suggestion> {
         ),
         itemCount: snapshot.data!.length,
       )
-          : Container(child: Text('Loading...')),
+          : snapshot.data == null ?  Container(child:ListTile(
+          onTap: () {
+            address = query;
+            close(context, null as Suggestion);
+          },
+          leading: const Icon(Icons.search),
+          title: Text(query,style: TextStyle(fontSize: 15),))) :
+      Container(child: Text('Loading...')),
     );
   }
+
+
 }

@@ -18,7 +18,7 @@ import '../navigationdrawer/home_menu_drawer.dart';
 
 class HomeWidget extends StatefulWidget {
 
-  const HomeWidget( {Key? key}) : super(key: key);
+  const HomeWidget({Key? key}) : super(key: key);
 
   @override
   State<HomeWidget> createState() => _HomeWidgetState();
@@ -300,9 +300,15 @@ class _HomeWidgetState extends State<HomeWidget> {
                               // This will change the text displayed in the TextField
                               if (result != null) {
                                 final placeDetails = await PlaceApiProvider(sessionToken)
-                                    .getPlaceDetailFromId(result.placeId);
+                                    .getPlaceDetailFromId(result.placeId!);
                                 setState(() {
-                                  startAddressController.text = result.description;
+                                  startAddressController.text = result.description!;
+                                  _startAddress =   startAddressController.text ;
+                                });
+                              }else {
+                                print("source addres:${AddressSearch.address}");
+                                setState(() {
+                                  startAddressController.text = AddressSearch.address;
                                   _startAddress =   startAddressController.text ;
                                 });
                               }
@@ -334,11 +340,18 @@ class _HomeWidgetState extends State<HomeWidget> {
                               // This will change the text displayed in the TextField
                               if (result != null) {
                                 final placeDetails = await PlaceApiProvider(sessionToken)
-                                    .getPlaceDetailFromId(result.placeId);
+                                    .getPlaceDetailFromId(result.placeId!);
                                 setState(() {
-                                  destinationAddressController.text = result.description;
+                                  destinationAddressController.text = result.description!;
                                   _destinationAddress= destinationAddressController.text;
                                 });
+                              }else{
+                                print("dest addres:${AddressSearch.address}");
+                                setState(() {
+                                  destinationAddressController.text = AddressSearch.address;
+                                  _destinationAddress= destinationAddressController.text;
+                                });
+
                               }
                             },
                             child: AbsorbPointer(
