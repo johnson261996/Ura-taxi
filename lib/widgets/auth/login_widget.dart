@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:ura_taxi/resources/images.dart';
 import 'package:ura_taxi/screens/home/home.dart';
 import '../../routes/routes.dart';
@@ -19,11 +20,50 @@ class _LoginWidgetState extends State<LoginWidget> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late String _email, _passwaord;
-  bool _showSpinner = false;
   late User _user;
   bool isLoggedIn = false;
 
 
+  loadData(BuildContext context,String domain) {
+    //somecode to load data
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          elevation: 10.0,
+          shape:RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          insetPadding: EdgeInsets.only(top: 10.0),
+          child:  Container(
+            height: 100,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                 CircularProgressIndicator(),
+                 SizedBox(width: 20,),
+                 Text("Loading", style: TextStyle(fontSize: 15.0),textAlign: TextAlign.center,),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+     Future.delayed( Duration(seconds: 3), () {
+      Navigator.pop(context); //pop dialog
+      if(domain.compareTo('google.com')==0)
+        signup(context);
+      else
+        initiateFacebookLogin();
+    });
+  }
+
+  @override
+  void initState() {
+      //call load data on start
+    super.initState();
+  }
 
   void onLoginStatusChanged(bool isLoggedIn) {
     Navigator.pushReplacement(
@@ -34,13 +74,11 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   void initiateFacebookLogin() async {
-    setState(() {
-      _showSpinner = true;
-    });
     try{
       final facebookLoginResult = await FacebookAuth.instance.login();
       if (facebookLoginResult.status == LoginStatus.success) {
         // you are logged
+
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomeScreen()));
         final AccessToken accessToken = facebookLoginResult.accessToken!;
@@ -80,7 +118,8 @@ class _LoginWidgetState extends State<LoginWidget> {
          throw "error";
      }
     }finally{
-      _showSpinner = false;
+
+
     }
 
   }
@@ -102,8 +141,12 @@ class _LoginWidgetState extends State<LoginWidget> {
       if (result != null) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      }  // if result not null we simply call the MaterialpageRoute,
-      // for go to the HomePage screen
+      }  // if result not null we simply call the MaterialpageRoute,for go to the HomePage screen
+      else{
+        setState(() {
+          log('could not sign in with wrong email and password');
+        });
+      }
     }
   }
 
@@ -125,7 +168,9 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
-    return Column(
+    String google= "google.com";
+    String facebook = "facebook.com";
+    return  Column(
     children: <Widget>[
          Container(
            margin: const EdgeInsets.only(top: 50),
@@ -249,7 +294,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                    children: [
                      GestureDetector(
                        onTap: () {
-                         signup(context);
+                         loadData(context,google);
+
                        }, // Image tapped
                        child: Image.asset(
                          Images.google_Img,
@@ -261,7 +307,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                      const SizedBox(width: 20,),
                      GestureDetector(
                        onTap: () {
-                         initiateFacebookLogin();
+                         loadData(context,facebook);
+
                        }, // Image tapped
                        child: Image.asset(
                          Images.facebook_img,

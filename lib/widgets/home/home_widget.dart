@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
+import 'package:ura_taxi/utils/Icon_Utils.dart';
 import 'package:ura_taxi/widgets/home/choose_ride_widget.dart';
 import 'package:ura_taxi/widgets/home/search_address_widget.dart';
 import 'package:uuid/uuid.dart';
@@ -16,7 +18,7 @@ import '../navigationdrawer/home_menu_drawer.dart';
 
 class HomeWidget extends StatefulWidget {
 
-  const HomeWidget( {Key? key}) : super(key: key);
+  const HomeWidget({Key? key}) : super(key: key);
 
   @override
   State<HomeWidget> createState() => _HomeWidgetState();
@@ -42,14 +44,21 @@ class _HomeWidgetState extends State<HomeWidget> {
   String _startAddress = '';
   String _destinationAddress = '';
   String? _placeDistance;
-
+  String location = "Location Name:";
+  CameraPosition? cameraPosition;
+  BitmapDescriptor cabIcon = BitmapDescriptor.defaultMarker;
   Set<Marker> markers = {};
+  List<Marker> nearByCabMarkers = <Marker>[];
 
   late PolylinePoints polylinePoints;
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
-
+  late String _mapStyle;
   bool done = false;
+  bool left_arrow_btn = false;
+  bool menu_btn = true;
+  bool pin = true;
+  bool showMap = true;
   late String error;
   final  sessionToken = Uuid().v4();
   //late PlaceApiProvider apiClient;
@@ -58,18 +67,37 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      getLocation();
+     rootBundle.loadString('assets/map_style').then((string) {
+      _mapStyle = string;
     });
 
-
+    setState(() {
+      getLocation();
+      getCabIcon();
+    });
   }
+
   @override
   void dispose() {
     startAddressController.dispose();
     destinationAddressController.dispose();
     super.dispose();
 
+  }
+
+  void getCabIcon() async {
+    cabIcon = await IconUtils.createMarkerImageFromAsset();
+  }
+
+  showNearbyCabs(List<LatLng> latLngList) {
+    int count = 0;
+    for (LatLng item in latLngList) {
+      nearByCabMarkers.add(Marker(
+          markerId: MarkerId(count.toString()), icon: cabIcon, position: item));
+      count++;
+    }
+
+    setState(() {});
   }
 
   Widget _textField({
@@ -121,6 +149,12 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
+  _toggle() {
+    setState(() {
+      showMap = !showMap;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     void showBottomPanel() {
@@ -140,234 +174,299 @@ class _HomeWidgetState extends State<HomeWidget> {
     double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      key: _scaffoldKey,
-      bottomSheet: Container(
-        height: 300,
-        decoration: BoxDecoration(color: Colors.black),
-        child: Column(),
-      ),
-      drawer: Drawer(
-        child: HomeMenuDrawer(key: null,),
-      ),
-      body: Stack(
-        children: <Widget>[
-          GoogleMap(
-            mapType: MapType.normal,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-            initialCameraPosition: _initialLocation,
-            onMapCreated:(GoogleMapController controller) {
-              mapController = controller;
-            },
-            markers: Set<Marker>.from(markers),
-            polylines: Set<Polyline>.of(polylines.values),
-          ),
-          Positioned(
-            left: 0,
-            top: 0,
-            right: 0,
-            child: Column(
-              children: <Widget>[
-                AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0.0,
-                  leading: OutlinedButton(
-                    onPressed: () {
-                      _scaffoldKey.currentState!.openDrawer();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide( color: Colors.transparent),
-                    ),
-                    child: Icon(
-                      Icons.menu,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                SafeArea(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding:  EdgeInsets.only(top:deviceHeight(context) *0.550 ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white70,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20.0),
-                          ),
-                        ),
-                        width: width * 0.9,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              SizedBox(height: 10),
-                              InkWell(
-                                onTap: ()async{
-                                  final Suggestion? result = await showSearch(
-                                    context: context,
-                                    delegate: AddressSearch(sessionToken),
-
-                                  );
-                                  // This will change the text displayed in the TextField
-                                  if (result != null) {
-                                    final placeDetails = await PlaceApiProvider(sessionToken)
-                                        .getPlaceDetailFromId(result.placeId);
-                                    setState(() {
-                                      startAddressController.text = result.description;
-                                      _startAddress =   startAddressController.text ;
-                                    });
-                                  }
-                                },
-                                child: AbsorbPointer(
-                                  child: _textField(
-                                     // label: 'Start',
-                                      hint: 'pick up',
-                                      readonly: false,
-                                      prefixIcon: Icon(Icons.circle,color: Colors.green,size: 10,),
-                                      controller: startAddressController,
-                                      focusNode: startAddressFocusNode,
-                                      width: width,
-                                      locationCallback: (String value) {
-                                        setState(() {
-                                          _startAddress = value;
-                                          _startAddress =   startAddressController.text ;
-                                        });
-                                      }),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              InkWell(
-                                onTap: ()async{
-                                  final Suggestion? result = await showSearch(
-                                    context: context,
-                                    delegate: AddressSearch(sessionToken),
-                                  );
-                                  // This will change the text displayed in the TextField
-                                  if (result != null) {
-                                    final placeDetails = await PlaceApiProvider(sessionToken)
-                                        .getPlaceDetailFromId(result.placeId);
-                                    setState(() {
-                                      destinationAddressController.text = result.description;
-                                      _destinationAddress= destinationAddressController.text;
-                                    });
-                                  }
-                                },
-                                child: AbsorbPointer(
-                                  child: _textField(
-                                     // label: 'Destination',
-                                      hint: 'where to go?',
-                                      readonly: true,
-                                      prefixIcon: Icon(Icons.circle,color: Colors.red,size: 10,),
-                                      controller: destinationAddressController,
-                                      focusNode: desrinationAddressFocusNode,
-                                      width: width,
-                                      locationCallback: (String value)  {
-                                        setState(() {
-
-                                          _destinationAddress = value;
-                                          _destinationAddress= destinationAddressController.text;
-                                        });
-                                      },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Visibility(
-                                visible: _placeDistance == null ? false : true,
-                                child: Text(
-                                  'DISTANCE: $_placeDistance km',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              ElevatedButton(
-                                onPressed: (_startAddress != '' &&
-                                    _destinationAddress != '')
-                                    ? () async {
-                                  startAddressFocusNode.unfocus();
-                                  desrinationAddressFocusNode.unfocus();
-                                  setState(() {
-                                    if (markers.isNotEmpty) markers.clear();
-                                    if (polylines.isNotEmpty)
-                                      polylines.clear();
-                                    if (polylineCoordinates.isNotEmpty)
-                                      polylineCoordinates.clear();
-                                    _placeDistance = null;
-                                  });
-
-                                  _calculateDistance().then((isCalculated) {
-                                    if (isCalculated) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Distance Calculated Sucessfully'),
-                                        ),
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Error Calculating Distance'),
-                                        ),
-                                      );
-                                    }
-                                  });
-                                  showBottomPanel();
-                                }: null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Go'.toUpperCase(),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20.0,
-                                    ),
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.purpleAccent,
-                                  minimumSize: Size(width*0.8, 48),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+    return GestureDetector(
+      onDoubleTap: _toggle,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        key: _scaffoldKey,
+        bottomSheet: Container(
+          height: 300,
+          decoration: BoxDecoration(color: Colors.black),
+          child: Column(),
+        ),
+        drawer: Drawer(
+          child: HomeMenuDrawer(key: null,),
+        ),
+        body: Stack(
+          children: <Widget>[
+            GoogleMap(
+              mapType: MapType.normal,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              initialCameraPosition: _initialLocation,
+              onMapCreated:(GoogleMapController controller) {
+                mapController = controller;
+                controller.setMapStyle(_mapStyle);
+              },
+              onCameraMove: (CameraPosition cameraPositiona) {
+                cameraPosition = cameraPositiona; //when map is dragging
+              },
+              onCameraIdle: () async { //when map drag stops
+                List<Placemark> placemarks = await placemarkFromCoordinates(cameraPosition!.target.latitude, cameraPosition!.target.longitude);
+                setState(() { //get place name from lat and lang
+                  if(pin==true){
+                    location = "${placemarks.first.name}, ${placemarks.first.locality}, ${placemarks.first.postalCode} ,${placemarks.first.administrativeArea.toString()}, ${placemarks.first.country}" ;
+                    startAddressController.text = location;
+                    _startAddress =   startAddressController.text ;
+                  }
+                });
+              },
+              markers: Set<Marker>.from(markers),
+             // nearByCabMarkers.toSet(),
+              polylines: Set<Polyline>.of(polylines.values),
+            ),
+            if(pin)
+            Center( //picker image on google map
+              child: Image.asset("assets/images/pin.png", width: 30,height: 40,),
+            ),
+            if(left_arrow_btn)
+            Positioned(
+              left: 0,
+              top: MediaQuery.of(context).size.height * 0.07,
+              right: MediaQuery.of(context).size.width * 0.85,
+              child: IconButton(
+                icon:  Icon(Icons.arrow_back),
+                color: Colors.black,
+                onPressed: () {
+                  setState(() {
+                    menu_btn = true;
+                    left_arrow_btn = false;
+                    pin = true;
+                    markers.clear();
+                    polylines.clear();
+                    polylineCoordinates.clear();
+                    startAddressController.clear();
+                    _destinationAddress = '';
+                    destinationAddressController.clear();
+                    getLocation();
+                  });
+                },
+              ),),
+            if(menu_btn)
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              child: Column(
+                children: <Widget>[
+                  AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0.0,
+                    leading: OutlinedButton(
+                      onPressed: () {
+                        _scaffoldKey.currentState!.openDrawer();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide( color: Colors.transparent),
+                      ),
+                      child: Icon(
+                        Icons.menu,
+                        color: Colors.black,
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
-          ),
-          Positioned(
-            left: 0,
-            top:deviceHeight(context)*0.640,
-            right: 20,
-            child: Align(
-              alignment: Alignment.topRight,
-              // add your floating action button
-              child: FloatingActionButton(
-                backgroundColor: Colors.white,
-                onPressed: getLocation,
-                child: Icon(Icons.location_on_rounded,
-                color: Colors.black,),
+
+                ],
               ),
             ),
-          ),
-        ],
+            if(showMap)
+            SafeArea(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding:  EdgeInsets.only(top:deviceHeight(context) *0.550 ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                    width: width * 0.9,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          SizedBox(height: 10),
+                          InkWell(
+                            onTap: ()async{
+                              final Suggestion? result = await showSearch(
+                                context: context,
+                                delegate: AddressSearch(sessionToken),
+
+                              );
+                              // This will change the text displayed in the TextField
+                              if (result != null) {
+                                final placeDetails = await PlaceApiProvider(sessionToken)
+                                    .getPlaceDetailFromId(result.placeId!);
+                                setState(() {
+                                  startAddressController.text = result.description!;
+                                  _startAddress =   startAddressController.text ;
+                                });
+                              }else {
+                                print("source addres:${AddressSearch.address}");
+                                setState(() {
+                                  startAddressController.text = AddressSearch.address;
+                                  _startAddress =   startAddressController.text ;
+                                });
+                              }
+                            },
+                            child: AbsorbPointer(
+                              child: _textField(
+                                // label: 'Start',
+                                  hint: 'pick up',
+                                  readonly: false,
+                                  prefixIcon: Icon(Icons.circle,color: Colors.green,size: 10,),
+                                  controller: startAddressController,
+                                  focusNode: startAddressFocusNode,
+                                  width: width,
+                                  locationCallback: (String value) {
+                                    setState(() {
+                                      _startAddress = value;
+                                      _startAddress =   startAddressController.text ;
+                                    });
+                                  }),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          InkWell(
+                            onTap: ()async{
+                              final Suggestion? result = await showSearch(
+                                context: context,
+                                delegate: AddressSearch(sessionToken),
+                              );
+                              // This will change the text displayed in the TextField
+                              if (result != null) {
+                                final placeDetails = await PlaceApiProvider(sessionToken)
+                                    .getPlaceDetailFromId(result.placeId!);
+                                setState(() {
+                                  destinationAddressController.text = result.description!;
+                                  _destinationAddress= destinationAddressController.text;
+                                });
+                              }else{
+                                print("dest addres:${AddressSearch.address}");
+                                setState(() {
+                                  destinationAddressController.text = AddressSearch.address;
+                                  _destinationAddress= destinationAddressController.text;
+                                });
+
+                              }
+                            },
+                            child: AbsorbPointer(
+                              child: _textField(
+                                // label: 'Destination',
+                                hint: 'where to go?',
+                                readonly: true,
+                                prefixIcon: Icon(Icons.circle,color: Colors.red,size: 10,),
+                                controller: destinationAddressController,
+                                focusNode: desrinationAddressFocusNode,
+                                width: width,
+                                locationCallback: (String value)  {
+                                  setState(() {
+
+                                    _destinationAddress = value;
+                                    _destinationAddress= destinationAddressController.text;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Visibility(
+                            visible: _placeDistance == null || left_arrow_btn!=true ? false : true,
+                            child: Text(
+                              'DISTANCE: $_placeDistance km',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ElevatedButton(
+                            onPressed: (_startAddress != '' &&
+                                _destinationAddress != '')
+                                ? () async {
+                              startAddressFocusNode.unfocus();
+                              desrinationAddressFocusNode.unfocus();
+                              setState(() {
+                                left_arrow_btn = true;
+                                menu_btn = false;
+                                pin = false;
+                                if (markers.isNotEmpty) markers.clear();
+                                if (polylines.isNotEmpty)
+                                  polylines.clear();
+                                if (polylineCoordinates.isNotEmpty)
+                                  polylineCoordinates.clear();
+                                _placeDistance = null;
+                              });
+
+                              _calculateDistance().then((isCalculated) {
+                                if (isCalculated) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Distance Calculated Sucessfully'),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Error Calculating Distance'),
+                                    ),
+                                  );
+                                }
+                              });
+                              showBottomPanel();
+                            }: null,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Go'.toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.purpleAccent,
+                              minimumSize: Size(width*0.8, 48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if(showMap)
+            Positioned(
+              left: 0,
+              top:deviceHeight(context)*0.640,
+              right: 20,
+              child: Align(
+                alignment: Alignment.topRight,
+                // add your floating action button
+                child: FloatingActionButton(
+                  backgroundColor: Colors.white,
+                  onPressed: getLocation,
+                  child: Icon(Icons.location_on_rounded,
+                  color: Colors.black,),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -446,7 +545,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           title: 'Start $startCoordinatesString',
           snippet: _startAddress,
         ),
-        icon: BitmapDescriptor.defaultMarker,
+        icon: await BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(40, 40)), 'assets/images/map_pin_green.png')
+
       );
 
       // Destination Location Marker
@@ -457,7 +557,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           title: 'Destination $destinationCoordinatesString',
           snippet: _destinationAddress,
         ),
-        icon: BitmapDescriptor.defaultMarker,
+        icon:await BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(40, 40)), 'assets/images/map_pin_red.png')
       );
 
       // Adding the markers to the list
@@ -584,9 +684,4 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
     polylines[id] = polyline;
   }
-
-
-
-
-
 }
