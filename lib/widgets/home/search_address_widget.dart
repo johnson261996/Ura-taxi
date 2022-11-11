@@ -28,6 +28,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
       tooltip: 'Back',
       icon: Icon(Icons.arrow_back),
       onPressed: () {
+        address='';
         Navigator.of(context).pop();
       },
     );
@@ -58,8 +59,9 @@ class AddressSearch extends SearchDelegate<Suggestion> {
         padding: EdgeInsets.all(16.0),
         child: Text('Enter your address'),
       )
-          :snapshot.data != null
-          ?  ListView.builder(
+          :snapshot.data != null ?
+      snapshot.data!.isNotEmpty ?
+      ListView.builder(
         itemBuilder: (context, index) => ListTile(
           leading: const Icon(Icons.location_on),
           title:
@@ -69,7 +71,13 @@ class AddressSearch extends SearchDelegate<Suggestion> {
           },
         ),
         itemCount: snapshot.data!.length,
-      )
+      ):Container(child:ListTile(
+          onTap: () {
+            address = query;
+            close(context, null as Suggestion);
+          },
+          leading: const Icon(Icons.search),
+          title: Text(query,style: TextStyle(fontSize: 15),)))
           : snapshot.data == null ?  Container(child:ListTile(
           onTap: () {
             address = query;
